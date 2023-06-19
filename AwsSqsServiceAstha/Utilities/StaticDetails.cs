@@ -6,16 +6,8 @@ using System.Text;
 namespace AwsSqsServiceAstha.Utilities
 {
     public static class StaticDetails
-    {
-        public static string Endpoint = ConfigurationManager.AppSettings["Endpoint"];
-        public static string Topic = ConfigurationManager.AppSettings["Topic"];
-        public static string OrderSubscription = ConfigurationManager.AppSettings["OrderSubscription"];
-        public static string ProductSubscription = ConfigurationManager.AppSettings["ProductSubscription"];
-        public static string LocationSubscription = ConfigurationManager.AppSettings["LocationSubscription"];
-        public static string ReturnSubscription = ConfigurationManager.AppSettings["ReturnSubscription"];
-        public static string ShipmentSubscription = ConfigurationManager.AppSettings["ShipmentSubscription"];
+    {       
         public static string ConnectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-
         //AWS
         public static string MaxMessages = ConfigurationManager.AppSettings["MaxMessages"];
         public static string WaitTime = ConfigurationManager.AppSettings["WaitTime"];
