@@ -5,12 +5,8 @@ using Amazon.SQS.Model;
 using AwsSqsServiceAstha.Entities;
 using AwsSqsServiceAstha.QResponse;
 using AwsSqsServiceAstha.Utilities;
-using Microsoft.Azure.ServiceBus;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Message = Amazon.SQS.Model.Message;
@@ -30,8 +26,6 @@ namespace AwsSqsServiceAstha
         public static string serviceURL = StaticDetails.serviceURL;
         public static string AWS_AccountNumber = StaticDetails.AWS_AccountNumber;
         public static string queueName = StaticDetails.queueName;
-
-
 
         AwsSqsRepository repo = new AwsSqsRepository();
         public Form1()
@@ -153,13 +147,7 @@ namespace AwsSqsServiceAstha
         }
 
 
-        #endregion
-
-        Task ExceptionReceivedHandler(ExceptionReceivedEventArgs exceptionReceivedEventArgs)
-        {
-            string s = exceptionReceivedEventArgs.Exception.ToString();
-            return Task.CompletedTask;
-        }
+        #endregion       
 
         private void Form1_Load(object sender, EventArgs e)
         {

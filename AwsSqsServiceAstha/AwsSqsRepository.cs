@@ -1,13 +1,9 @@
 ﻿using AwsSqsServiceAstha.Entities;
 using AwsSqsServiceAstha.Providers;
 using AwsSqsServiceAstha.QResponse;
-using AwsSqsServiceAstha.Utilities;
 using FIK.DAL;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Text;
 
 namespace AwsSqsServiceAstha
 {
