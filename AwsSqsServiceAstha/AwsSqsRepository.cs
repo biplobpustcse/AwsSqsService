@@ -219,7 +219,7 @@ namespace AwsSqsServiceAstha
             model.ConversionFactor = Convert.ToInt32(response.data.conversionFactor);
             model.DeliveryOption = response.data.deliveryOption;
             model.IsGift = response.data.isGift;
-            model.MerchantId = response.data.merchantId;
+            model.MerchantId = string.IsNullOrEmpty(response.data.merchantId) ? "" : response.data.merchantId;
             model.OrderDate = response.data.orderDate;
             model.OrderId = Convert.ToInt64(response.data.orderId);
             orderId = model.OrderId;
@@ -227,20 +227,23 @@ namespace AwsSqsServiceAstha
             model.PickupMobile = response.data.pickupMobile;
             model.PromotionDiscount = Convert.ToDecimal(response.data.promotionDiscount);
             model.ReferenceNo = response.data.referenceNo;
-            model.RefundAmount = Convert.ToDecimal(response.data.refundAmount);
+            model.RefundAmount = string.IsNullOrEmpty(response.data.refundAmount) ? 0 : Convert.ToDecimal(response.data.refundAmount);
             model.ReturnOrderId = string.IsNullOrEmpty(response.data.returnOrderId) ? 0 : Convert.ToInt64(response.data.returnOrderId);
             model.Rewards = Convert.ToString(response.data.rewards);
-            model.ShippingDiscount = Convert.ToDecimal(response.data.shippingDiscount);
+            model.ShippingDiscount = string.IsNullOrEmpty(response.data.shippingDiscount) ? 0 : Convert.ToDecimal(response.data.shippingDiscount);
             model.ShippingMode = response.data.shippingMode;
             model.Status = response.data.status;
             model.TaxTotal = response.data.taxTotal;
             model.TotalAmount = Convert.ToDecimal(response.data.totalAmount);
             model.VoucherCode = response.data.voucherCode;
-            model.VoucherDiscount = Convert.ToDecimal(response.data.voucherDiscount);
-            model.Mobile = response.data.billingAddress.mobile;
-            model.Address = response.data.billingAddress.address1 + response.data.billingAddress.address2;
-            model.Name = response.data.billingAddress.firstname + response.data.billingAddress.lastname;
-            model.Email = response.data.billingAddress.email;
+            model.VoucherDiscount = string.IsNullOrEmpty(response.data.voucherDiscount) ? 0 : Convert.ToDecimal(response.data.voucherDiscount);
+            if (response.data.billingAddress != null)
+            {
+                model.Mobile = response.data.billingAddress.mobile;
+                model.Address = response.data.billingAddress.address1 + response.data.billingAddress.address2;
+                model.Name = response.data.billingAddress.firstname + response.data.billingAddress.lastname;
+                model.Email = response.data.billingAddress.email;
+            }
             model.TransferStatus = "N";// orderline transfer status - New
             model.orderLine = orderLine(response.data.orderLineId);
             model.paymentDetails = paymentDetails(response.data.paymentDetails);
@@ -254,7 +257,7 @@ namespace AwsSqsServiceAstha
             foreach (var item in lstItem)
             {
                 OrderLine order = new OrderLine();
-                order.BundleProductId = Convert.ToInt64(item.BundleProductId);
+                order.BundleProductId = string.IsNullOrEmpty(item.BundleProductId) ? 0 : Convert.ToInt64(item.BundleProductId);
                 order.CancelQuantity = Convert.ToDecimal(item.cancelQuantity);
                 order.DeliveryMode = item.deliveryMode;
                 order.DerivedStatus = item.derivedStatus;
@@ -262,13 +265,13 @@ namespace AwsSqsServiceAstha
                 order.Description = item.description;
                 order.IsBackOrder = item.isBackOrder;
                 order.IsParentProduct = item.isParentProduct;
-                order.IsPrimaryProduct = Convert.ToBoolean(item.isPrimaryProduct);
+                order.IsPrimaryProduct = string.IsNullOrEmpty(item.isPrimaryProduct) ? false : Convert.ToBoolean(item.isPrimaryProduct);
                 order.ItemStatus = item.itemStatus;
                 order.locationCode = item.locationCode;
-                order.OrderId = Convert.ToInt64(item.orderId);
-                order.OrderLineId = Convert.ToInt64(item.orderLineId);
+                order.OrderId = string.IsNullOrEmpty(item.orderId) ? 0 : Convert.ToInt64(item.orderId);
+                order.OrderLineId = string.IsNullOrEmpty(item.orderLineId) ? 0 : Convert.ToInt64(item.orderLineId);
                 order.ParentOrderlineId = Convert.ToInt64(item.parentOrderlineId);
-                order.ProductId = Convert.ToInt64(item.productId);
+                order.ProductId = string.IsNullOrEmpty(item.productId) ? 0 : Convert.ToInt64(item.productId);
                 order.ProductPrice = Convert.ToDecimal(item.productPrice);
                 order.ProductTitle = item.ProductTitle;
                 order.Quantity = Convert.ToDecimal(item.quantity);
@@ -279,7 +282,7 @@ namespace AwsSqsServiceAstha
                 order.TotalPromotionDiscount = item.totalPromotionDiscount;
                 order.TotalTaxAmount = item.totalTaxAmount;
                 order.TotalVoucherDiscount = Convert.ToDecimal(item.totalVoucherDiscount);
-                order.VariantProductId = Convert.ToInt64(item.variantProductId);
+                order.VariantProductId = string.IsNullOrEmpty(item.variantProductId) ? 0 : Convert.ToInt64(item.variantProductId);
                 order.VariantSku = item.VariantSku;
                 order.TransferStatus = "N";
                 order.ResponseDate = DateTime.Now;

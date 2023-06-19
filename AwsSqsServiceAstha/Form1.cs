@@ -61,12 +61,13 @@ namespace AwsSqsServiceAstha
                             {
                                 try
                                 {
-                                    // Serialize our concrete class into a JSON String   
+                                    // Serialize our concrete class into a JSON String
+                                    //var jsonString = "{\r\n   \"actionDetails\":{\r\n      \"type\":\"ORDER_ALLOCATION\"\r\n   },\r\n   \"changedAttributes\":{\r\n      \r\n   },\r\n   \"data\":{\r\n      \"orderId\":\"64811111111\",\r\n      \"originalOrderId\":\"\",\r\n      \"orderDate\":\"2023-06-19T06:28:59.5453583Z\",\r\n      \"status\":0,\r\n      \"promotionDiscount\":\"0\",\r\n      \"shippingDiscount\":\"\",\r\n      \"taxTotal\":0,\r\n      \"totalAmount\":0,\r\n      \"amountPayable\":1800,\r\n      \"conversionFactor\":\"1\",\r\n      \"voucherCode\":\"\",\r\n      \"refundAmount\":\"\",\r\n      \"referenceNo\":\"\",\r\n      \"voucherDiscount\":\"\",\r\n      \"rewards\":\"\",\r\n      \"paymentDetails\":[\r\n         \r\n      ],\r\n      \"shippingMode\":5,\r\n      \"deliveryOption\":0,\r\n      \"billingAddress\":\"\",\r\n      \"shippingAddress\":\"\",\r\n      \"orderLineId\":[\r\n         {\r\n            \"orderId\":\"64811111111\",\r\n            \"orderLineId\":\"648111111112\",\r\n            \"productId\":\"648111111115\",\r\n            \"BundleProductId\":\"\",\r\n            \"ProductTitle\":\"\",\r\n            \"description\":\"\",\r\n            \"SKU\":\"\",\r\n            \"VariantSku\":\"\",\r\n            \"productPrice\":900,\r\n            \"locationCode\":\"\",\r\n            \"quantity\":1,\r\n            \"cancelQuantity\":0,\r\n            \"totalTaxAmount\":0,\r\n            \"shippingVoucherDiscount\":0,\r\n            \"shippingCost\":0,\r\n            \"totalPromotionDiscount\":0,\r\n            \"totalVoucherDiscount\":0,\r\n            \"derivedStatusCode\":2,\r\n            \"derivedStatus\":15,\r\n            \"deliveryMode\":0\r\n         },\r\n         {\r\n            \"orderId\":\"64811111111\",\r\n            \"orderLineId\":\"648111111113\",\r\n            \"productId\":\"648111111116\",\r\n            \"BundleProductId\":\"\",\r\n            \"ProductTitle\":\"\",\r\n            \"description\":\"\",\r\n            \"SKU\":\"\",\r\n            \"VariantSku\":\"\",\r\n            \"productPrice\":900,\r\n            \"locationCode\":\"\",\r\n            \"quantity\":1,\r\n            \"cancelQuantity\":0,\r\n            \"totalTaxAmount\":0,\r\n            \"shippingVoucherDiscount\":0,\r\n            \"shippingCost\":0,\r\n            \"totalPromotionDiscount\":0,\r\n            \"totalVoucherDiscount\":0,\r\n            \"derivedStatusCode\":2,\r\n            \"derivedStatus\":15,\r\n            \"deliveryMode\":0\r\n         }\r\n      ]\r\n   }\r\n}";
                                     var jsonString = item.data.ToString();
                                     var json = JsonConvert.DeserializeObject<OrderResponse>(jsonString);
                                     var response = repo.OrderManager(json, out string errMsg);
                                     repo.LogManager(jsonString, errMsg, response, "OrderID:" + json.data.orderId, json.data.orderId);
-                                    if (!string.IsNullOrEmpty(errMsg))
+                                    if (string.IsNullOrEmpty(errMsg))
                                     {
                                         await DeleteMessage(sqsClient, message, queueUrl);
                                     }
@@ -86,7 +87,7 @@ namespace AwsSqsServiceAstha
                                     var json = JsonConvert.DeserializeObject<ReturnResponse>(jsonString);
                                     var response = repo.ReturnManager(json, out string errMsg);
                                     repo.LogManager(jsonString, errMsg, response, "ReturnOrder ID:" + json.returnRequest.orderId, json.returnRequest.orderId);
-                                    if (!string.IsNullOrEmpty(errMsg))
+                                    if (string.IsNullOrEmpty(errMsg))
                                     {
                                         await DeleteMessage(sqsClient, message, queueUrl);
                                     }
@@ -106,6 +107,10 @@ namespace AwsSqsServiceAstha
                                     var json = JsonConvert.DeserializeObject<ShipmentResponse>(jsonString);
                                     var response = repo.ShipmentManager(json, out string errMsg);
                                     repo.LogManager(jsonString, errMsg, response, "Shipment ID:" + json.Data.OrderId, json.Data.OrderId);
+                                    if (string.IsNullOrEmpty(errMsg))
+                                    {
+                                        await DeleteMessage(sqsClient, message, queueUrl);
+                                    }
                                 }
                                 catch (Exception ex)
                                 {
@@ -113,9 +118,13 @@ namespace AwsSqsServiceAstha
                                     repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Return", "Receive");
                                 }
                             }
+                            else
+                            {
+                                var aaa = "Not Match";
+                            }
                         }
                     }
-                } while (isCloseForm == true);
+                } while (isCloseForm == false);
             }
             catch (Exception ex)
             {
@@ -146,7 +155,6 @@ namespace AwsSqsServiceAstha
             await sqsClient.DeleteMessageAsync(qUrl, message.ReceiptHandle);
         }
 
-
         #endregion       
 
         private void Form1_Load(object sender, EventArgs e)
@@ -163,9 +171,7 @@ namespace AwsSqsServiceAstha
                 MessageBox.Show("Database Connection Error");
                 lblDb.Text = "Database Connection Error";
             }
-
         }
-
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (string.IsNullOrEmpty(lblDb.Text))
@@ -190,7 +196,6 @@ namespace AwsSqsServiceAstha
             notifyIcon1.Visible = true;
             notifyIcon1.ShowBalloonTip(1000);
         }
-
         private void AddbuttonClick(object sender, EventArgs e)
         {
             JsonForm jForm = new JsonForm();
