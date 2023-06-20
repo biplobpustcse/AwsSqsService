@@ -19,7 +19,7 @@ namespace AwsSqsServiceAstha
         {
             errMsg = string.Empty;
             CompositeModel composite = new CompositeModel();
-            if(response.data.status == "0")
+            if (response.data.status == "0")
             {
                 response.data.status = "A";
             }
@@ -322,14 +322,16 @@ namespace AwsSqsServiceAstha
             {
                 errMsg = string.Empty;
                 List<string> sqlList = new List<string>();
-                if (!string.IsNullOrEmpty(response.newData.variantSKU))
+                foreach (var item in response.products)
                 {
-                    sqlList.Add("update  Article set  IsEc='1' where ArtNo='" + response.newData.variantSKU + "' ");
-                }
-                else
-                {
-                    sqlList.Add("update  Article set  IsEc='1' where left(ArtNo,8)='" + response.newData.productSKU + "' ");
-
+                    if (!string.IsNullOrEmpty(item.VariantSku))
+                    {
+                        sqlList.Add(" update  Article set  IsEc='1' where ArtNo='" + item.VariantSku + "' ");
+                    }
+                    else
+                    {
+                        sqlList.Add(" update  Article set  IsEc='1' where left(ArtNo,8)='" + item.Sku + "' ");
+                    }
                 }
                 bool resp = _dal.ExecuteQuery(sqlList, ref msg);
                 if (resp == false || !string.IsNullOrEmpty(msg))
@@ -395,11 +397,11 @@ namespace AwsSqsServiceAstha
                 List<ShippingOrder> lstship = new List<ShippingOrder>();
                 CompositeModel composite = new CompositeModel();
                 errMsg = string.Empty;
-                if (response.Data.ShippingStatus == "D" )
+                if (response.Data.ShippingStatus == "D")
                 {
-                    if(response.Data.ShipmentType== "Reverse")
+                    if (response.Data.ShipmentType == "Reverse")
                     {
-                        errMsg = "Skipped for reversed shipment. Shipment ID:"+response.Data.ShipmentId;
+                        errMsg = "Skipped for reversed shipment. Shipment ID:" + response.Data.ShipmentId;
                         return false;
                     }
                     foreach (var item in response.Data.ShipmentItems)
@@ -414,7 +416,7 @@ namespace AwsSqsServiceAstha
                         ship.ProductId = item.ProductId;
                         ship.Quantity = Convert.ToDecimal(item.Quantity);
                         ship.ShipmentDetailsId = item.ShipmentDetailsId;
-                        ship.ShippingStatus = response.Data.ShippingStatus;                        
+                        ship.ShippingStatus = response.Data.ShippingStatus;
                         ship.SKU = item.SKU;
                         ship.Title = item.Title;
                         ship.VariantProductId = item.VariantProductId;
@@ -492,7 +494,7 @@ namespace AwsSqsServiceAstha
                 //EcDataTransferLog
                 TransferLog tl = new TransferLog();
                 tl.Date = DateTime.Now;
-                tl.Type = "AzureServiceBus";
+                tl.Type = "AwsSqs";
                 tl.Taskid = FromWhere;
                 if (!response)
                 {

@@ -32,7 +32,7 @@ namespace AwsSqsServiceAstha
         {
             InitializeComponent();
         }
-        #region OrderManagement
+        #region ReceivedataFromAwsSqs
 
         public async void ReceivedataFromAwsSqs()
         {
@@ -57,6 +57,39 @@ namespace AwsSqsServiceAstha
                         foreach (var message in receiveMessageResponse.Messages)
                         {
                             var item = JsonConvert.DeserializeObject<AwsSqsMessage>(message.Body);
+                            //ProductManagement
+                            if (item.eventType.ToLower() == "updateproduct" || item.eventType == "ProductTypeUpdate")
+                            {
+                                try
+                                {
+                                    // Serialize our concrete class into a JSON String
+                                    //var jsonString = "{ \"products\": [\r\n        {\r\n            \"Sku\": \"T726N\",\r\n            \"VariantSku\": \"121313\",\r\n            \"IsEc\": true\r\n        },\r\n        {\r\n            \"Sku\": \"T726N\",\r\n            \"VariantSku\": \"121313\",\r\n            \"IsEc\": false\r\n        }] \r\n     }";
+                                    var jsonString = item.data.ToString();
+                                    var json = JsonConvert.DeserializeObject<ProductResponse>(jsonString);
+                                    var response = repo.ProductManager(json, out string errMsg);
+                                    foreach (var product in json.products)
+                                    {
+                                        if (!string.IsNullOrEmpty(product.VariantSku))
+                                        {
+                                            repo.LogManager(jsonString, errMsg, response, "VariantSku:" + product.VariantSku, product.VariantSku);
+                                        }
+                                        else
+                                        {
+                                            repo.LogManager(jsonString, errMsg, response, "Sku:" + product.Sku, product.Sku);
+                                        }
+                                    }
+                                    if (string.IsNullOrEmpty(errMsg))
+                                    {
+                                        await DeleteMessage(sqsClient, message, queueUrl);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    var jsonString = JsonConvert.SerializeObject(item.data);
+                                    repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Product", "Receive");
+                                }
+                            }
+                            //OrderManagement
                             if (item.eventType.ToLower() == "allocateorder")
                             {
                                 try
@@ -78,6 +111,7 @@ namespace AwsSqsServiceAstha
                                     repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Order", "Receive");
                                 }
                             }
+                            //ReturnManagement
                             else if (item.eventType.ToLower() == "returnorder")
                             {
                                 try
@@ -97,7 +131,8 @@ namespace AwsSqsServiceAstha
                                     var jsonString = JsonConvert.SerializeObject(item.data);
                                     repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Return", "Receive");
                                 }
-                            }                            
+                            }
+                            //ShipmentManagement
                             else if (item.eventType.ToLower() == "shipmentorder")
                             {
                                 try
@@ -120,7 +155,7 @@ namespace AwsSqsServiceAstha
                             }
                             else
                             {
-                                var aaa = "Not Match";
+                                var ord = "Not Match";
                             }
                         }
                     }
@@ -142,9 +177,9 @@ namespace AwsSqsServiceAstha
             // receiving the message from the queue  
             var sendMessageRequest = new ReceiveMessageRequest
             {
-                QueueUrl = queueUrl,
-                MaxNumberOfMessages = maxNoOfMessages,
-                WaitTimeSeconds = waitTimeSec
+                QueueUrl = queueUrl
+                //MaxNumberOfMessages = maxNoOfMessages,
+                //WaitTimeSeconds = waitTimeSec
             };
             return await sqsClient.ReceiveMessageAsync(sendMessageRequest);
         }
@@ -161,10 +196,7 @@ namespace AwsSqsServiceAstha
         {
             if (repo.ConnCheck())
             {
-                _ = Task.Run(() => ReceivedataFromAwsSqs());
-                // _ = Task.Run(() => ProductManagement());//blocked only for testing because we have no test credentials
-                // _ = Task.Run(() => ReturnManagement());
-                // _ = Task.Run(() => ShipmentManagement());
+                _ = Task.Run(() => ReceivedataFromAwsSqs());               
             }
             else
             {
