@@ -94,6 +94,7 @@ namespace AwsSqsServiceAstha
             this.button2.TabIndex = 3;
             this.button2.Text = "ADD";
             this.button2.UseVisualStyleBackColor = false;
+            this.button2.Visible = false;
             this.button2.Click += new System.EventHandler(this.AddbuttonClick);
             // 
             // label2
@@ -101,9 +102,9 @@ namespace AwsSqsServiceAstha
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(684, 426);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(100, 15);
+            this.label2.Size = new System.Drawing.Size(81, 15);
             this.label2.TabIndex = 4;
-            this.label2.Text = "V2.1660-05012023";
+            this.label2.Text = "Version 1.0.0.1";
             // 
             // Form1
             // 
