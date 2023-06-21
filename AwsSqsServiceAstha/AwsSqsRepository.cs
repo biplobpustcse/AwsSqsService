@@ -217,7 +217,7 @@ namespace AwsSqsServiceAstha
             Order model = new Order();
             model.AmountPayable = Convert.ToDecimal(response.data.amountPayable);
             model.ConversionFactor = Convert.ToInt32(response.data.conversionFactor);
-            model.DeliveryOption = response.data.deliveryOption;
+            model.DeliveryOption = string.IsNullOrEmpty(response.data.deliveryOption) ? "" : response.data.deliveryOption;
             model.IsGift = response.data.isGift;
             model.MerchantId = string.IsNullOrEmpty(response.data.merchantId) ? "" : response.data.merchantId;
             model.OrderDate = response.data.orderDate;
@@ -271,7 +271,7 @@ namespace AwsSqsServiceAstha
                 order.OrderId = string.IsNullOrEmpty(item.orderId) ? 0 : Convert.ToInt64(item.orderId);
                 order.OrderLineId = string.IsNullOrEmpty(item.orderLineId) ? 0 : Convert.ToInt64(item.orderLineId);
                 order.ParentOrderlineId = Convert.ToInt64(item.parentOrderlineId);
-                order.ProductId = string.IsNullOrEmpty(item.productId) ? 0 : Convert.ToInt64(item.productId);
+                order.ProductId = string.IsNullOrEmpty(item.productId) ? "" : item.productId;
                 order.ProductPrice = Convert.ToDecimal(item.productPrice);
                 order.ProductTitle = item.ProductTitle;
                 order.Quantity = Convert.ToDecimal(item.quantity);
@@ -282,7 +282,7 @@ namespace AwsSqsServiceAstha
                 order.TotalPromotionDiscount = item.totalPromotionDiscount;
                 order.TotalTaxAmount = item.totalTaxAmount;
                 order.TotalVoucherDiscount = Convert.ToDecimal(item.totalVoucherDiscount);
-                order.VariantProductId = string.IsNullOrEmpty(item.variantProductId) ? 0 : Convert.ToInt64(item.variantProductId);
+                order.VariantProductId = string.IsNullOrEmpty(item.variantProductId) ? "" : item.variantProductId;
                 order.VariantSku = item.VariantSku;
                 order.TransferStatus = "N";
                 order.ResponseDate = DateTime.Now;
@@ -321,16 +321,26 @@ namespace AwsSqsServiceAstha
             try
             {
                 errMsg = string.Empty;
+                int isEc = 0;
                 List<string> sqlList = new List<string>();
                 foreach (var item in response.products)
                 {
-                    if (!string.IsNullOrEmpty(item.VariantSku))
+                    if (item.IsEc)
                     {
-                        sqlList.Add(" update  Article set  IsEc='1' where ArtNo='" + item.VariantSku + "' ");
+                        isEc = 1;
                     }
                     else
                     {
-                        sqlList.Add(" update  Article set  IsEc='1' where left(ArtNo,8)='" + item.Sku + "' ");
+                        isEc = 0;
+                    }
+
+                    if (!string.IsNullOrEmpty(item.VariantSku))
+                    {
+                        sqlList.Add(" update  Article set  IsEc='" + isEc + "' where ArtNo='" + item.VariantSku + "' ");
+                    }
+                    else
+                    {
+                        sqlList.Add(" update  Article set  IsEc='" + isEc + "' where left(ArtNo,8)='" + item.Sku + "' ");
                     }
                 }
                 bool resp = _dal.ExecuteQuery(sqlList, ref msg);
@@ -413,13 +423,13 @@ namespace AwsSqsServiceAstha
                         ship.OrderID = response.Data.OrderId;
                         ship.OrderLineId = item.OrderLineId;
                         ship.ParentOrderLineId = item.ParentOrderLineId;
-                        ship.ProductId = item.ProductId;
+                        ship.ProductId = string.IsNullOrEmpty(item.ProductId) ? "" : item.ProductId;
                         ship.Quantity = Convert.ToDecimal(item.Quantity);
                         ship.ShipmentDetailsId = item.ShipmentDetailsId;
                         ship.ShippingStatus = response.Data.ShippingStatus;
                         ship.SKU = item.SKU;
                         ship.Title = item.Title;
-                        ship.VariantProductId = item.VariantProductId;
+                        ship.VariantProductId = string.IsNullOrEmpty(item.VariantProductId) ? "" : item.VariantProductId;
                         ship.VariantSKU = item.VariantSKU;
                         ship.TransferStatus = "N";
                         ship.CancelQty = 0;
@@ -450,7 +460,7 @@ namespace AwsSqsServiceAstha
                         order.OrderId = Convert.ToInt64(response.Data.OrderId);
                         order.OrderLineId = Convert.ToInt64(item.OrderLineId);
                         order.ParentOrderlineId = 0;
-                        order.ProductId = Convert.ToInt64(item.ProductId);
+                        order.ProductId = string.IsNullOrEmpty(item.ProductId) ? "" : item.ProductId;
                         order.ProductPrice = 0;
                         order.ProductTitle = item.Title;
                         order.Quantity = Convert.ToDecimal(item.Quantity);
@@ -461,7 +471,7 @@ namespace AwsSqsServiceAstha
                         order.TotalPromotionDiscount = 0;
                         order.TotalTaxAmount = 0;
                         order.TotalVoucherDiscount = 0;
-                        order.VariantProductId = Convert.ToInt64(item.VariantProductId);
+                        order.VariantProductId = string.IsNullOrEmpty(item.VariantProductId) ? "" : item.VariantProductId;
                         order.VariantSku = item.VariantSKU;
                         order.TransferStatus = "N";
                         lstOrderHistory.Add(order);

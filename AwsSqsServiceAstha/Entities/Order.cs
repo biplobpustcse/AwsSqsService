@@ -49,8 +49,8 @@ namespace AwsSqsServiceAstha.Entities
         public decimal TotalPromotionDiscount { get; set; }
         public string DeliveryMode { get; set; }
         public string ItemStatus { get; set; }
-        public long VariantProductId { get; set; }
-        public long ProductId { get; set; }
+        public string VariantProductId { get; set; }
+        public string ProductId { get; set; }
         public bool IsPrimaryProduct { get; set; }
         public string SKU { get; set; }
         public string VariantSku { get; set; }

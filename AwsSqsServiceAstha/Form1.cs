@@ -5,8 +5,10 @@ using Amazon.SQS.Model;
 using AwsSqsServiceAstha.Entities;
 using AwsSqsServiceAstha.QResponse;
 using AwsSqsServiceAstha.Utilities;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Message = Amazon.SQS.Model.Message;
@@ -58,7 +60,7 @@ namespace AwsSqsServiceAstha
                         {
                             var item = JsonConvert.DeserializeObject<AwsSqsMessage>(message.Body);
                             //ProductManagement
-                            if (item.eventType.ToLower() == "updateproduct" || item.eventType == "ProductTypeUpdate")
+                            if (item.eventType.ToLower() == "updateproduct")
                             {
                                 try
                                 {
@@ -67,21 +69,9 @@ namespace AwsSqsServiceAstha
                                     var jsonString = item.data.ToString();
                                     var json = JsonConvert.DeserializeObject<ProductResponse>(jsonString);
                                     var response = repo.ProductManager(json, out string errMsg);
-                                    foreach (var product in json.products)
-                                    {
-                                        if (!string.IsNullOrEmpty(product.VariantSku))
-                                        {
-                                            repo.LogManager(jsonString, errMsg, response, "VariantSku:" + product.VariantSku, product.VariantSku);
-                                        }
-                                        else
-                                        {
-                                            repo.LogManager(jsonString, errMsg, response, "Sku:" + product.Sku, product.Sku);
-                                        }
-                                    }
-                                    if (string.IsNullOrEmpty(errMsg))
-                                    {
-                                        await DeleteMessage(sqsClient, message, queueUrl);
-                                    }
+                                    string variantSkuAll = string.Join(",", json.products.Select(x=>x.VariantSku));
+                                    repo.LogManager(jsonString, errMsg, response, message.MessageId, "VariantSku:" + variantSkuAll);
+                                    await DeleteMessage(sqsClient, message, queueUrl);
                                 }
                                 catch (Exception ex)
                                 {
@@ -90,7 +80,7 @@ namespace AwsSqsServiceAstha
                                 }
                             }
                             //OrderManagement
-                            if (item.eventType.ToLower() == "allocateorder")
+                            else if (item.eventType.ToLower() == "allocateorder")
                             {
                                 try
                                 {
@@ -99,11 +89,8 @@ namespace AwsSqsServiceAstha
                                     var jsonString = item.data.ToString();
                                     var json = JsonConvert.DeserializeObject<OrderResponse>(jsonString);
                                     var response = repo.OrderManager(json, out string errMsg);
-                                    repo.LogManager(jsonString, errMsg, response, "OrderID:" + json.data.orderId, json.data.orderId);
-                                    if (string.IsNullOrEmpty(errMsg))
-                                    {
-                                        await DeleteMessage(sqsClient, message, queueUrl);
-                                    }
+                                    repo.LogManager(jsonString, errMsg, response, message.MessageId, "OrderID:" + json.data.orderId);
+                                    await DeleteMessage(sqsClient, message, queueUrl);
                                 }
                                 catch (Exception ex)
                                 {
@@ -120,11 +107,8 @@ namespace AwsSqsServiceAstha
                                     var jsonString = item.data.ToString();
                                     var json = JsonConvert.DeserializeObject<ReturnResponse>(jsonString);
                                     var response = repo.ReturnManager(json, out string errMsg);
-                                    repo.LogManager(jsonString, errMsg, response, "ReturnOrder ID:" + json.returnRequest.orderId, json.returnRequest.orderId);
-                                    if (string.IsNullOrEmpty(errMsg))
-                                    {
-                                        await DeleteMessage(sqsClient, message, queueUrl);
-                                    }
+                                    repo.LogManager(jsonString, errMsg, response, message.MessageId, "ReturnOrder ID:" + json.returnRequest.orderId);
+                                    await DeleteMessage(sqsClient, message, queueUrl);
                                 }
                                 catch (Exception ex)
                                 {
@@ -141,11 +125,8 @@ namespace AwsSqsServiceAstha
                                     var jsonString = item.data.ToString();
                                     var json = JsonConvert.DeserializeObject<ShipmentResponse>(jsonString);
                                     var response = repo.ShipmentManager(json, out string errMsg);
-                                    repo.LogManager(jsonString, errMsg, response, "Shipment ID:" + json.Data.OrderId, json.Data.OrderId);
-                                    if (string.IsNullOrEmpty(errMsg))
-                                    {
-                                        await DeleteMessage(sqsClient, message, queueUrl);
-                                    }
+                                    repo.LogManager(jsonString, errMsg, response, message.MessageId, "Shipment ID:" + json.Data.OrderId);
+                                    await DeleteMessage(sqsClient, message, queueUrl);
                                 }
                                 catch (Exception ex)
                                 {
@@ -177,9 +158,9 @@ namespace AwsSqsServiceAstha
             // receiving the message from the queue  
             var sendMessageRequest = new ReceiveMessageRequest
             {
-                QueueUrl = queueUrl
-                //MaxNumberOfMessages = maxNoOfMessages,
-                //WaitTimeSeconds = waitTimeSec
+                QueueUrl = queueUrl,
+                MaxNumberOfMessages = maxNoOfMessages,
+                WaitTimeSeconds = waitTimeSec
             };
             return await sqsClient.ReceiveMessageAsync(sendMessageRequest);
         }
