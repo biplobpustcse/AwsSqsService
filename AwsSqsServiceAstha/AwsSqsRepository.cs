@@ -18,11 +18,7 @@ namespace AwsSqsServiceAstha
         public bool OrderManager(OrderResponse response, out string errMsg)
         {
             errMsg = string.Empty;
-            CompositeModel composite = new CompositeModel();
-            if (response.data.status == "0")
-            {
-                response.data.status = "A";
-            }
+            CompositeModel composite = new CompositeModel();            
             if ((response.data.status == "A" && response.actionDetails != null && response.actionDetails.type == "ORDER_ALLOCATION" && string.IsNullOrEmpty(response.data.originalOrderId)) ||
                 (response.data.status == "A" && response.actionDetails != null && response.actionDetails.type == "ORDER_ALLOCATION" && response.data.subStatus == "RL" && string.IsNullOrEmpty(response.data.originalOrderId)) ||
                 (response.data.status == "A" && response.data.subStatus == "RS"))//|| response.data.status == "D" || response.data.status == "C"
@@ -266,7 +262,7 @@ namespace AwsSqsServiceAstha
                 order.IsBackOrder = item.isBackOrder;
                 order.IsParentProduct = item.isParentProduct;
                 order.IsPrimaryProduct = string.IsNullOrEmpty(item.isPrimaryProduct) ? false : Convert.ToBoolean(item.isPrimaryProduct);
-                order.ItemStatus = item.itemStatus;
+                order.ItemStatus = "";
                 order.locationCode = item.locationCode;
                 order.OrderId = string.IsNullOrEmpty(item.orderId) ? 0 : Convert.ToInt64(item.orderId);
                 order.OrderLineId = string.IsNullOrEmpty(item.orderLineId) ? 0 : Convert.ToInt64(item.orderLineId);
@@ -278,7 +274,7 @@ namespace AwsSqsServiceAstha
                 order.ShippingCost = Convert.ToDecimal(item.shippingCost);
                 order.ShippingVoucherDiscount = Convert.ToDecimal(item.shippingVoucherDiscount);
                 order.SKU = item.SKU;
-                order.StockAction = item.stockAction;
+                order.StockAction = "";
                 order.TotalPromotionDiscount = item.totalPromotionDiscount;
                 order.TotalTaxAmount = item.totalTaxAmount;
                 order.TotalVoucherDiscount = Convert.ToDecimal(item.totalVoucherDiscount);
@@ -304,7 +300,8 @@ namespace AwsSqsServiceAstha
                 model.PaymentDetailsId = Convert.ToInt64(item.paymentDetailsId);
                 model.PaymentOption = item.paymentOption;
                 model.PaymentStatus = item.paymentStatus;
-                model.PaymentType = item.paymentType;
+                //model.PaymentType = item.paymentType;
+                model.PaymentType = item.paymentOption;
                 model.PointsBurned = Convert.ToInt32(item.pointsBurned);
                 model.ResponseCode = item.responseCode;
 
