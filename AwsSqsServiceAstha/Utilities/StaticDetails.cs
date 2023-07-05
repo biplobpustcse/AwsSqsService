@@ -8,6 +8,10 @@ namespace AwsSqsServiceAstha.Utilities
     public static class StaticDetails
     {       
         public static string ConnectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+        public static string Order = "OrderID";
+        public static string ReturnOrder = "ReturnOrderID";
+        public static string ShipmentOrder = "ShipmentOrderID";
+        public static string VariantSku = "VariantSku";
         //AWS
         public static string MaxMessages = ConfigurationManager.AppSettings["MaxMessages"];
         public static string WaitTime = ConfigurationManager.AppSettings["WaitTime"];

@@ -70,14 +70,14 @@ namespace AwsSqsServiceAstha
                                     var json = JsonConvert.DeserializeObject<ProductResponse>(jsonString);
                                     var response = repo.ProductManager(json, out string errMsg);
                                     string variantSkuAll = string.Join(",", json.products.Select(x => string.IsNullOrEmpty(x.VariantSku) ? x.Sku : x.VariantSku));
-                                    repo.LogManager(jsonString, errMsg, response, message.MessageId, "VariantSku:" + variantSkuAll);
+                                    repo.LogManager(jsonString, errMsg, response, message.MessageId, variantSkuAll, StaticDetails.VariantSku);
                                     await DeleteMessage(sqsClient, message, queueUrl);
                                 }
                                 catch (Exception ex)
                                 {
                                     await DeleteMessage(sqsClient, message, queueUrl);
                                     var jsonString = JsonConvert.SerializeObject(item.data);
-                                    repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Product", "Receive");
+                                    repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Product", "Receive", StaticDetails.VariantSku);
                                 }
                             }
                             //OrderManagement
@@ -90,14 +90,14 @@ namespace AwsSqsServiceAstha
                                     var jsonString = item.data.ToString();
                                     var json = JsonConvert.DeserializeObject<OrderResponse>(jsonString);
                                     var response = repo.OrderManager(json, out string errMsg);
-                                    repo.LogManager(jsonString, errMsg, response, message.MessageId, "OrderID:" + json.data.orderId);
+                                    repo.LogManager(jsonString, errMsg, response, message.MessageId, json.data.orderId, StaticDetails.Order);
                                     await DeleteMessage(sqsClient, message, queueUrl);
                                 }
                                 catch (Exception ex)
                                 {
                                     await DeleteMessage(sqsClient, message, queueUrl);
                                     var jsonString = JsonConvert.SerializeObject(item.data);
-                                    repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Order", "Receive");
+                                    repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Order", "Receive", StaticDetails.Order);
                                 }
                             }
                             //ReturnManagement
@@ -109,14 +109,14 @@ namespace AwsSqsServiceAstha
                                     var jsonString = item.data.ToString();
                                     var json = JsonConvert.DeserializeObject<ReturnResponse>(jsonString);
                                     var response = repo.ReturnManager(json, out string errMsg);
-                                    repo.LogManager(jsonString, errMsg, response, message.MessageId, "ReturnOrder ID:" + json.returnRequest.orderId);
+                                    repo.LogManager(jsonString, errMsg, response, message.MessageId, json.returnRequest.orderId, StaticDetails.ReturnOrder);
                                     await DeleteMessage(sqsClient, message, queueUrl);
                                 }
                                 catch (Exception ex)
                                 {
                                     await DeleteMessage(sqsClient, message, queueUrl);
                                     var jsonString = JsonConvert.SerializeObject(item.data);
-                                    repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Return", "Receive");
+                                    repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Return", "Receive", StaticDetails.ReturnOrder);
                                 }
                             }
                             //ShipmentManagement
@@ -130,7 +130,7 @@ namespace AwsSqsServiceAstha
                                     if (json.Data != null)
                                     {
                                         var response = repo.ShipmentManager(json, out string errMsg);
-                                        repo.LogManager(jsonString, errMsg, response, message.MessageId, "Shipment ID:" + json.Data.OrderId);
+                                        repo.LogManager(jsonString, errMsg, response, message.MessageId, json.Data.OrderId, StaticDetails.ShipmentOrder);
                                     }
                                     await DeleteMessage(sqsClient, message, queueUrl);
                                 }
@@ -138,7 +138,7 @@ namespace AwsSqsServiceAstha
                                 {
                                     await DeleteMessage(sqsClient, message, queueUrl);
                                     var jsonString = JsonConvert.SerializeObject(item.data);
-                                    repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Return", "Receive");
+                                    repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Return", "Receive", StaticDetails.ShipmentOrder);
                                 }
                             }
                             else

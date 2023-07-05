@@ -1,4 +1,5 @@
 ﻿using AwsSqsServiceAstha.QResponse;
+using AwsSqsServiceAstha.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -57,12 +58,12 @@ namespace AwsSqsServiceAstha
                         MessageBox.Show("Response Invalid. See log for more details");
                     }
 
-                    repo.LogManager(jsonString, errMsg, response, "OrderID:" + json.data.orderId, json.data.orderId);
+                    repo.LogManager(jsonString, errMsg, response, "OrderID:" + json.data.orderId, json.data.orderId, StaticDetails.Order);
                 }
                 catch (Exception ex)
                 {
 
-                    repo.LogManager(JsonObjectTxtBox.Text, ex.Message + ex.StackTrace, false, "Exception From Manual Order Insert", "JSONForm");
+                    repo.LogManager(JsonObjectTxtBox.Text, ex.Message + ex.StackTrace, false, "Exception From Manual Order Insert", "JSONForm", StaticDetails.Order);
                 }
             }
             if (JsontypeDDL.SelectedItem.ToString() == "ARTICLE")
@@ -90,12 +91,12 @@ namespace AwsSqsServiceAstha
                     {
                         MessageBox.Show("Response Invalid. See log for more details");
                     }
-                    repo.LogManager(jsonString, errMsg, response, "ProductID:" + json.newData.productId, json.newData.productId);
+                    repo.LogManager(jsonString, errMsg, response, "ProductID:" + json.newData.productId, json.newData.productId, StaticDetails.VariantSku);
                 }
                 catch (Exception ex)
                 {
 
-                    repo.LogManager(JsonObjectTxtBox.Text, ex.Message + ex.StackTrace, false, "Exception From Manual Product Insert", "JSONForm");
+                    repo.LogManager(JsonObjectTxtBox.Text, ex.Message + ex.StackTrace, false, "Exception From Manual Product Insert", "JSONForm", StaticDetails.VariantSku);
                 }
             }
             if (JsontypeDDL.SelectedItem.ToString() == "RETURN")
@@ -124,11 +125,11 @@ namespace AwsSqsServiceAstha
                     {
                         MessageBox.Show("Response Invalid. See log for more details");
                     }
-                    repo.LogManager(jsonString, errMsg, response, "ReturnOrder ID:" + json.returnRequest.orderId, json.returnRequest.orderId);
+                    repo.LogManager(jsonString, errMsg, response, "ReturnOrder ID:" + json.returnRequest.orderId, json.returnRequest.orderId, StaticDetails.ReturnOrder);
                 }
                 catch (Exception ex)
                 {
-                    repo.LogManager(JsonObjectTxtBox.Text, ex.Message + ex.StackTrace, false, "Exception From Manual Return Insert", "JSONForm");
+                    repo.LogManager(JsonObjectTxtBox.Text, ex.Message + ex.StackTrace, false, "Exception From Manual Return Insert", "JSONForm", StaticDetails.ReturnOrder);
                 }
             }
             if (JsontypeDDL.SelectedItem.ToString() == "SHIPMENT")
@@ -156,11 +157,11 @@ namespace AwsSqsServiceAstha
                     {
                         MessageBox.Show("Response Invalid. See log for more details");
                     }
-                    repo.LogManager(jsonString, errMsg, response, "ShipmentID:" + json.Data.OrderId, json.Data.OrderId);
+                    repo.LogManager(jsonString, errMsg, response, "ShipmentID:" + json.Data.OrderId, json.Data.OrderId, StaticDetails.ShipmentOrder);
                 }
                 catch (Exception ex)
                 {
-                    repo.LogManager(JsonObjectTxtBox.Text, ex.Message + ex.StackTrace, false, "Exception From Manual Product Insert", "JSONForm");
+                    repo.LogManager(JsonObjectTxtBox.Text, ex.Message + ex.StackTrace, false, "Exception From Manual Product Insert", "JSONForm", StaticDetails.ShipmentOrder);
                 }
             }
 

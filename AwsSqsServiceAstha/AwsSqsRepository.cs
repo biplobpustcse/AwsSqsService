@@ -18,7 +18,7 @@ namespace AwsSqsServiceAstha
         public bool OrderManager(OrderResponse response, out string errMsg)
         {
             errMsg = string.Empty;
-            CompositeModel composite = new CompositeModel();            
+            CompositeModel composite = new CompositeModel();
             if ((response.data.status == "A" && response.actionDetails != null && response.actionDetails.type == "ORDER_ALLOCATION" && string.IsNullOrEmpty(response.data.originalOrderId)) ||
                 (response.data.status == "A" && response.actionDetails != null && response.actionDetails.type == "ORDER_ALLOCATION" && response.data.subStatus == "RL" && string.IsNullOrEmpty(response.data.originalOrderId)) ||
                 (response.data.status == "A" && response.data.subStatus == "RS"))//|| response.data.status == "D" || response.data.status == "C"
@@ -495,7 +495,7 @@ namespace AwsSqsServiceAstha
         #endregion
 
         #region LogManager
-        public void LogManager(string JsonString, string errMsg, bool response, string FromWhere, string ID)
+        public void LogManager(string JsonString, string errMsg, bool response, string taskID, string ID, string eventName)
         {
             try
             {
@@ -503,23 +503,36 @@ namespace AwsSqsServiceAstha
                 TransferLog tl = new TransferLog();
                 tl.Date = DateTime.Now;
                 tl.Type = "AwsSqs";
-                tl.Taskid = FromWhere;
+                tl.Taskid = taskID;
+                tl.Message = JsonString;
+                tl.MessageCode = eventName + ":" + ID;
+                tl.ErrorCode = ID;
                 if (!response)
                 {
-                    tl.Message = JsonString;
                     tl.Status = "FAILED";
-                    tl.MessageCode = ID;
-                    tl.ErrorCode = ID;
                     tl.Reason = errMsg;
                 }
                 if (response)
                 {
-                    tl.Message = "ID :- " + FromWhere + " has been saved successfully." + JsonString;
                     tl.Status = "SUCCESSED";
-                    tl.MessageCode = ID;
-                    tl.ErrorCode = ID;
                     tl.Reason = "";
                 }
+                //if (!response)
+                //{
+                //    tl.Message = JsonString;
+                //    tl.Status = "FAILED";
+                //    tl.MessageCode = eventName + ":" + ID;
+                //    tl.ErrorCode = ID;
+                //    tl.Reason = errMsg;
+                //}
+                //if (response)
+                //{
+                //    tl.Message = JsonString;
+                //    tl.Status = "SUCCESSED";
+                //    tl.MessageCode = eventName + ":" + ID;
+                //    tl.ErrorCode = ID;
+                //    tl.Reason = "";
+                //}
                 _dal.Insert<TransferLog>(tl, "", "", "EcDataTransferLog", ref msg);
             }
             catch (Exception e)
