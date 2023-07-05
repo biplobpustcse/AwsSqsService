@@ -59,8 +59,8 @@ namespace AwsSqsServiceAstha
             // 
             // notifyIcon1
             // 
-            this.notifyIcon1.BalloonTipText = "Capillary Azure to Apex Sync";
-            this.notifyIcon1.BalloonTipTitle = "Capillary Azure to Apex Sync";
+            this.notifyIcon1.BalloonTipText = "Astha AWS to Apex Sync";
+            this.notifyIcon1.BalloonTipTitle = "Astha AWS to Apex Sync";
             this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
             this.notifyIcon1.Text = "Astha AWS Sync";
             this.notifyIcon1.Visible = true;
@@ -104,7 +104,7 @@ namespace AwsSqsServiceAstha
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(81, 15);
             this.label2.TabIndex = 4;
-            this.label2.Text = "Version 1.0.0.2";
+            this.label2.Text = "Version 1.0.0.3";
             // 
             // Form1
             // 

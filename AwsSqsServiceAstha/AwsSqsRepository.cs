@@ -258,7 +258,8 @@ namespace AwsSqsServiceAstha
                 order.DeliveryMode = item.deliveryMode;
                 order.DerivedStatus = item.derivedStatus;
                 order.DerivedStatusCode = item.derivedStatusCode;
-                order.Description = item.description;
+                //order.Description = item.description;
+                order.Description = "";
                 order.IsBackOrder = item.isBackOrder;
                 order.IsParentProduct = item.isParentProduct;
                 order.IsPrimaryProduct = string.IsNullOrEmpty(item.isPrimaryProduct) ? false : Convert.ToBoolean(item.isPrimaryProduct);
