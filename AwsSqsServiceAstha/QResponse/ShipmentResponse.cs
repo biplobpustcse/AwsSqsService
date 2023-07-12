@@ -17,6 +17,8 @@ namespace AwsSqsServiceAstha.QResponse
 
     public class ShipmentItem
     {
+        public string OrderID { get; set; }
+        public string locationCode { get; set; }
         public string VariantSKU { get; set; }
         public string CategoryId { get; set; }
         public string VariantProductId { get; set; }
@@ -29,6 +31,7 @@ namespace AwsSqsServiceAstha.QResponse
         public string ShipmentDetailsId { get; set; }
         public string SKU { get; set; }
         public string BundleProductId { get; set; }
+        public string DocketNumber { get; set; }
     }
 
     public class DeliverySlots
@@ -96,6 +99,9 @@ namespace AwsSqsServiceAstha.QResponse
     {
         //public ChangedAttributes ChangedAttributes { get; set; }
         //public MetaData metaData { get; set; }
-        public ShipmentResponseData Data { get; set; }
+        //public ShipmentResponseData data { get; set; }
+
+        public string ShippingStatus { get; set; }
+        public List<ShipmentItem> ShipmentItems { get; set; }
     }
 }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -125,7 +126,7 @@ namespace AwsSqsServiceAstha
                     {
                         MessageBox.Show("Response Invalid. See log for more details");
                     }
-                    repo.LogManager(jsonString, errMsg, response, "ReturnOrder ID:" + json.returnRequest.orderId, json.returnRequest.orderId, StaticDetails.ReturnOrder);
+                    repo.LogManager(jsonString, errMsg, response, StaticDetails.ReturnOrder + ":" + json.returnRequestDetails.FirstOrDefault().OrderID, json.returnRequestDetails.FirstOrDefault().OrderID, StaticDetails.ReturnOrder);
                 }
                 catch (Exception ex)
                 {
@@ -157,7 +158,7 @@ namespace AwsSqsServiceAstha
                     {
                         MessageBox.Show("Response Invalid. See log for more details");
                     }
-                    repo.LogManager(jsonString, errMsg, response, "ShipmentID:" + json.Data.OrderId, json.Data.OrderId, StaticDetails.ShipmentOrder);
+                    repo.LogManager(jsonString, errMsg, response, StaticDetails.ShipmentOrder + ":" + json.ShipmentItems.FirstOrDefault().OrderID, json.ShipmentItems.FirstOrDefault().OrderID, StaticDetails.ShipmentOrder);
                 }
                 catch (Exception ex)
                 {

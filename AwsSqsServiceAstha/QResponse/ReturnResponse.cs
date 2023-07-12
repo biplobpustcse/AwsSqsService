@@ -18,6 +18,7 @@ namespace AwsSqsServiceAstha.QResponse
 
     public class ReturnRequestDetail
     {
+        public string OrderID { get; set; }
         public string returnRequestId { get; set; }
         public string reason { get; set; }
         public string suggestedReturnAction { get; set; }
@@ -52,7 +53,7 @@ namespace AwsSqsServiceAstha.QResponse
         public List<ReturnRequestDetail> returnRequestDetails { get; set; }
         public string requestType { get; set; }
         public TaxDetails taxDetails { get; set; }
-        public string orderId { get; set; }
+        public string OrderID { get; set; }
         public string subStatusComment { get; set; }
         public string includeShippingCost { get; set; }
         public string refundStatus { get; set; }
@@ -74,7 +75,9 @@ namespace AwsSqsServiceAstha.QResponse
 
     public class ReturnResponse
     {
-        public ReturnRequest returnRequest { get; set; }
+        //public ReturnRequest returnRequest { get; set; }
+        public string returnRequest { get; set; }
+        public List<ReturnRequestDetail> returnRequestDetails { get; set; }
     }
 
 

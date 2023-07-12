@@ -86,7 +86,7 @@ namespace AwsSqsServiceAstha
                                 try
                                 {
                                     // Serialize our concrete class into a JSON String
-                                    //var jsonString = "{\r\n   \"actionDetails\":{\r\n      \"type\":\"ORDER_ALLOCATION\"\r\n   },\r\n   \"changedAttributes\":{\r\n      \r\n   },\r\n   \"data\":{\r\n      \"orderId\":\"23070300002\",\r\n      \"originalOrderId\":\"\",\r\n      \"orderDate\":\"2023-07-03T08:44:37.88753Z\",\r\n      \"status\":\"A\",\r\n      \"taxTotal\":0,\r\n      \"totalAmount\":6450,\r\n      \"amountPayable\":6450,\r\n      \"conversionFactor\":\"1\",\r\n      \"voucherCode\":\"\",\r\n      \"refundAmount\":\"\",\r\n      \"referenceNo\":\"\",\r\n      \"voucherDiscount\":\"\",\r\n      \"rewards\":null,\r\n      \"paymentDetails\":[\r\n         {\r\n            \"amount\":6450,\r\n            \"responseCode\":null,\r\n            \"pointsBurned\":null,\r\n            \"paymentOption\":\"COD\",\r\n            \"paymentDetailsId\":\"1815997069\",\r\n            \"paymentDate\":\"7/3/2023 8:44:41 AM\",\r\n            \"currencyCode\":\"BDT\"\r\n         }\r\n      ],\r\n      \"billingAddress\":{\r\n         \"firstname\":\"Testzxaxas\",\r\n         \"lastname\":\"002xzsa\",\r\n         \"address1\":\"test\",\r\n         \"address2\":\"ass\",\r\n         \"mobile\":\"\\u002B8801926142863\",\r\n         \"countryCode\":\"BD\",\r\n         \"email\":\"tester@asthait.com\"\r\n      },\r\n      \"shippingAddress\":{\r\n         \"firstname\":\"Testzxaxas\",\r\n         \"lastname\":\"002xzsa\",\r\n         \"address1\":\"test\",\r\n         \"address2\":\"ass\",\r\n         \"mobile\":\"\\u002B8801926142863\",\r\n         \"countryCode\":\"BD\",\r\n         \"email\":\"tester@asthait.com\"\r\n      },\r\n      \"orderLineId\":[\r\n         {\r\n            \"orderId\":\"23070300002\",\r\n            \"orderLineId\":\"230703000021\",\r\n            \"productId\":\"6481878a170b8383814fd5fa\",\r\n            \"BundleProductId\":\"\",\r\n            \"ProductTitle\":\"VENTURINI MEN\\u0027S FORMAL SHOE VERSION\",\r\n            \"description\":\"\\r\\n    \\r\\n    \\r\\n    \\r\\n    \\u003Cdiv style=\\u0022font-size:16px;\\u0022\\u003EThe RS-X is back. The future-retro silhouette of this sneaker returns with a progressive aesthetic and angular details, complete with nubuck and suede overlays. The combo\\u2019s all about a disruptive design to showcase your disruptive style.\\u003C/div\\u003E\\r\\n\\r\\n\\r\\n\\r\\n\",\r\n            \"SKU\":\"07116A53 \",\r\n            \"VariantSku\":\"07116A5339\",\r\n            \"productPrice\":4490,\r\n            \"locationCode\":\"G091\",\r\n            \"quantity\":1,\r\n            \"cancelQuantity\":0,\r\n            \"totalTaxAmount\":0,\r\n            \"shippingVoucherDiscount\":0,\r\n            \"shippingCost\":0,\r\n            \"totalPromotionDiscount\":0,\r\n            \"totalVoucherDiscount\":0,\r\n            \"derivedStatusCode\":\"A\",\r\n            \"derivedStatus\":\"Authorized\",\r\n            \"deliveryMode\":\"H\"\r\n         },\r\n         {\r\n            \"orderId\":\"23070300002\",\r\n            \"orderLineId\":\"230703000022\",\r\n            \"productId\":\"6486fadbe00345c3700d8d13\",\r\n            \"BundleProductId\":\"\",\r\n            \"ProductTitle\":\"TWINKLER GIRL\\u0027S PUMPY\",\r\n            \"description\":\"\\u003Cul style=\\u0022margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; color: rgb(0, 0, 0); font-family: lato, sans-serif;\\u0022\\u003E\\u003Cli style=\\u0022margin: 0px; padding: 0px; line-height: 1.5em;\\u0022\\u003E\\u003Cul\\u003E\\u003Cli style=\\u0022margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 2px 0px 5px;\\u0022\\u003ELightweight and non-slip sole.\\u0026nbsp;\\u003C/li\\u003E\\u003Cli style=\\u0022margin: 0px; padding: 0px; line-height: 1.5em;\\u0022\\u003E\\u003Cp style=\\u0022margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 2px 0px 5px;\\u0022\\u003EComfortable PU upper\\u003C/p\\u003E\\u003C/li\\u003E\\u003C/ul\\u003E\\u003C/li\\u003E\\u003C/ul\\u003E\\r\\n    \\r\\n\",\r\n            \"SKU\":\"678677\",\r\n            \"VariantSku\":67867742,\r\n            \"productPrice\":1960,\r\n            \"locationCode\":\"G107\",\r\n            \"quantity\":4,\r\n            \"cancelQuantity\":0,\r\n            \"totalTaxAmount\":0,\r\n            \"shippingVoucherDiscount\":0,\r\n            \"shippingCost\":0,\r\n            \"totalPromotionDiscount\":0,\r\n            \"totalVoucherDiscount\":0,\r\n            \"derivedStatusCode\":\"A\",\r\n            \"derivedStatus\":\"Authorized\",\r\n            \"deliveryMode\":\"H\"\r\n         }\r\n      ]\r\n   }\r\n}";
+                                    //var jsonString = "{\r\n   \"actionDetails\":{\r\n      \"type\":\"ORDER_ALLOCATION\"\r\n   },\r\n   \"changedAttributes\":{\r\n      \r\n   },\r\n   \"data\":{\r\n      \"orderId\":\"23071200007\",\r\n      \"originalOrderId\":\"\",\r\n      \"orderDate\":\"2023-07-12T06:02:22.4898963Z\",\r\n      \"status\":\"A\",\r\n      \"taxTotal\":0,\r\n      \"totalAmount\":8960,\r\n      \"amountPayable\":8460,\r\n      \"conversionFactor\":\"1\",\r\n      \"voucherCode\":\"\",\r\n      \"refundAmount\":\"\",\r\n      \"referenceNo\":\"\",\r\n      \"voucherDiscount\":\"\",\r\n      \"rewards\":null,\r\n      \"paymentDetails\":[\r\n         {\r\n            \"amount\":8460,\r\n            \"responseCode\":null,\r\n            \"pointsBurned\":null,\r\n            \"paymentOption\":\"COD\",\r\n            \"paymentDetailsId\":\"219754047\",\r\n            \"paymentDate\":\"7/12/2023 6:02:25 AM\",\r\n            \"currencyCode\":\"BDT\"\r\n         }\r\n      ],\r\n      \"billingAddress\":{\r\n         \"firstname\":\"Test\",\r\n         \"lastname\":\"Customer\",\r\n         \"address1\":\"Test Street 1\",\r\n         \"address2\":\"\",\r\n         \"mobile\":\"\\u002B8801926142863\",\r\n         \"countryCode\":\"BD\",\r\n         \"email\":\"tester@asthait.com\"\r\n      },\r\n      \"shippingAddress\":{\r\n         \"firstname\":\"Test\",\r\n         \"lastname\":\"Customer\",\r\n         \"address1\":\"Test Street 1\",\r\n         \"address2\":\"\",\r\n         \"mobile\":\"\\u002B8801926142863\",\r\n         \"countryCode\":\"BD\",\r\n         \"email\":\"tester@asthait.com\"\r\n      },\r\n      \"orderLineId\":[\r\n         {\r\n            \"orderId\":\"23071200007\",\r\n            \"orderLineId\":\"230712000071\",\r\n            \"productId\":\"647716da2740232599a6eb19\",\r\n            \"BundleProductId\":\"\",\r\n            \"ProductTitle\":\" VENTURINI MEN\\u0027S TOE CAP SHOE\",\r\n            \"description\":\"\\r\\n    \\r\\n    \\r\\n    \\r\\n    \\r\\n    \\r\\n    \\r\\n\\r\\n    \\r\\n    \\r\\n\\r\\n    \\u003Cdiv\\u003E\\r\\n  \\u003Cp style=\\u0022font-size:16px;color:#7C7C7C;text-align:justify\\u0022\\u003EOuter Panel: 92% Polyester, 8% Elastane\\u003C/p\\u003E\\r\\n  \\u003Cp style=\\u0022font-size:16px;color:#7C7C7C;text-align:justify\\u0022\\u003EInner Panel: 80% Polyester, 20% Elastane\\u003C/p\\u003E\\r\\n\\u003C/div\\u003E\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n\",\r\n            \"SKU\":\"91118A67\",\r\n            \"VariantSku\":\"91118A6720\",\r\n            \"productPrice\":4480,\r\n            \"locationCode\":\"G184\",\r\n            \"quantity\":1,\r\n            \"cancelQuantity\":0,\r\n            \"totalTaxAmount\":0,\r\n            \"shippingVoucherDiscount\":0,\r\n            \"shippingCost\":0,\r\n            \"totalPromotionDiscount\":250,\r\n            \"totalVoucherDiscount\":0,\r\n            \"derivedStatusCode\":\"A\",\r\n            \"derivedStatus\":\"Authorized\",\r\n            \"deliveryMode\":\"H\"\r\n         },\r\n         {\r\n            \"orderId\":\"23071200007\",\r\n            \"orderLineId\":\"230712000072\",\r\n            \"productId\":\"647716da2740232599a6eb19\",\r\n            \"BundleProductId\":\"\",\r\n            \"ProductTitle\":\" VENTURINI MEN\\u0027S TOE CAP SHOE\",\r\n            \"description\":\"\\r\\n    \\r\\n    \\r\\n    \\r\\n    \\r\\n    \\r\\n    \\r\\n\\r\\n    \\r\\n    \\r\\n\\r\\n    \\u003Cdiv\\u003E\\r\\n  \\u003Cp style=\\u0022font-size:16px;color:#7C7C7C;text-align:justify\\u0022\\u003EOuter Panel: 92% Polyester, 8% Elastane\\u003C/p\\u003E\\r\\n  \\u003Cp style=\\u0022font-size:16px;color:#7C7C7C;text-align:justify\\u0022\\u003EInner Panel: 80% Polyester, 20% Elastane\\u003C/p\\u003E\\r\\n\\u003C/div\\u003E\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n\",\r\n            \"SKU\":\"91118A67\",\r\n            \"VariantSku\":\"91118A6740\",\r\n            \"productPrice\":4480,\r\n            \"locationCode\":\"G184\",\r\n            \"quantity\":1,\r\n            \"cancelQuantity\":0,\r\n            \"totalTaxAmount\":0,\r\n            \"shippingVoucherDiscount\":0,\r\n            \"shippingCost\":0,\r\n            \"totalPromotionDiscount\":250,\r\n            \"totalVoucherDiscount\":0,\r\n            \"derivedStatusCode\":\"A\",\r\n            \"derivedStatus\":\"Authorized\",\r\n            \"deliveryMode\":\"H\"\r\n         }\r\n      ]\r\n   }\r\n}";
                                     var jsonString = item.data.ToString();
                                     var json = JsonConvert.DeserializeObject<OrderResponse>(jsonString);
                                     var response = repo.OrderManager(json, out string errMsg);
@@ -97,7 +97,7 @@ namespace AwsSqsServiceAstha
                                 {
                                     await DeleteMessage(sqsClient, message, queueUrl);
                                     var jsonString = JsonConvert.SerializeObject(item.data);
-                                    repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Order", "Receive", StaticDetails.Order);
+                                    repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Order", "AllocateOrder", StaticDetails.Order);
                                 }
                             }
                             //ReturnManagement
@@ -109,14 +109,14 @@ namespace AwsSqsServiceAstha
                                     var jsonString = item.data.ToString();
                                     var json = JsonConvert.DeserializeObject<ReturnResponse>(jsonString);
                                     var response = repo.ReturnManager(json, out string errMsg);
-                                    repo.LogManager(jsonString, errMsg, response, message.MessageId, json.returnRequest.orderId, StaticDetails.ReturnOrder);
+                                    repo.LogManager(jsonString, errMsg, response, message.MessageId, json.returnRequestDetails.FirstOrDefault().OrderID, StaticDetails.ReturnOrder);
                                     await DeleteMessage(sqsClient, message, queueUrl);
                                 }
                                 catch (Exception ex)
                                 {
                                     await DeleteMessage(sqsClient, message, queueUrl);
                                     var jsonString = JsonConvert.SerializeObject(item.data);
-                                    repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Return", "Receive", StaticDetails.ReturnOrder);
+                                    repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Return", "Return Order", StaticDetails.ReturnOrder);
                                 }
                             }
                             //ShipmentManagement
@@ -126,11 +126,16 @@ namespace AwsSqsServiceAstha
                                 {
                                     // Serialize our concrete class into a JSON String   
                                     var jsonString = item.data.ToString();
+                                    //var jsonString = "{\r\n   \"ShippingStatus\":\"O\",\r\n   \"ShipmentItems\":[\r\n      {\r\n         \"OrderID\":\"23070500011\",\r\n         \"OrderLineId\":\"230705000111\",\r\n         \"Quantity\":\"1\",\r\n         \"ShipmentDetailsId\":\"5851451851\",\r\n         \"ShippingStatus\":\"O\",\r\n         \"SKU\":\"91118A67\",\r\n         \"VariantSKU\":\"91118A6720\",\r\n         \"Title\":\"Sprint Mens Shoe\",\r\n         \"locationCode\":\"G184\"\r\n      }\r\n   ]\r\n}";
                                     var json = JsonConvert.DeserializeObject<ShipmentResponse>(jsonString);
-                                    if (json.Data != null)
+                                    if (json.ShipmentItems != null && json.ShipmentItems.Count >0)
                                     {
                                         var response = repo.ShipmentManager(json, out string errMsg);
-                                        repo.LogManager(jsonString, errMsg, response, message.MessageId, json.Data.OrderId, StaticDetails.ShipmentOrder);
+                                        repo.LogManager(jsonString, errMsg, response, message.MessageId, json.ShipmentItems.FirstOrDefault().OrderID, StaticDetails.ShipmentOrder);
+                                    }
+                                    else if (!string.IsNullOrEmpty(jsonString))
+                                    {
+                                        repo.LogManager(jsonString, "json format not match", false, message.MessageId, "Shipment Order", StaticDetails.ShipmentOrder);
                                     }
                                     await DeleteMessage(sqsClient, message, queueUrl);
                                 }
@@ -138,20 +143,16 @@ namespace AwsSqsServiceAstha
                                 {
                                     await DeleteMessage(sqsClient, message, queueUrl);
                                     var jsonString = JsonConvert.SerializeObject(item.data);
-                                    repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Return", "Receive", StaticDetails.ShipmentOrder);
+                                    repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Return", "Shipment Order", StaticDetails.ShipmentOrder);
                                 }
-                            }
-                            else
-                            {
-                                var ord = "Not Match";
-                            }
+                            }                            
                         }
                     }
                 } while (isCloseForm == false);
             }
             catch (Exception ex)
             {
-                resobj.ErrorMessage = ex.Message;
+                
             }
         }
 

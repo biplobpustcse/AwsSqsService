@@ -3,7 +3,10 @@ using AwsSqsServiceAstha.Providers;
 using AwsSqsServiceAstha.QResponse;
 using FIK.DAL;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace AwsSqsServiceAstha
 {
@@ -30,6 +33,10 @@ namespace AwsSqsServiceAstha
                 {
                     foreach (var dbOrder in dbOrderLst)
                     {
+                        if (response.data.orderLineId.Count == 0)
+                        {
+                            throw new Exception("orderLineId list can not be empty for orderID:" + response.data.orderId);
+                        }
                         var data = response.data.orderLineId.Find(a => a.VariantSku == dbOrder.VariantSku && a.orderId == Convert.ToString(dbOrder.OrderId));
 
                         if (Convert.ToString(dbOrder.OrderId) == data.orderId && dbOrder.VariantSku == data.VariantSku && dbOrder.locationCode == data.locationCode)
@@ -68,6 +75,11 @@ namespace AwsSqsServiceAstha
                             }
                         }
                     }
+                    if (dbOrderLst.Count != response.data.orderLineId.Count)
+                    {
+                        Order model = PrepareData(response);
+                        composite.AddRecordSet<OrderLine>(model.orderLine.Where(x => x.VariantSku != "" && dbOrderLst.All(y => y.VariantSku != x.VariantSku)).ToList(), OperationMode.InsertOrUpdaet, "", "", "OrderId,VariantSku", "EC_OrderLine");
+                    }
                     var lineResponse = _dal.InsertUpdateComposite(composite, ref msg);
                     if (!string.IsNullOrEmpty(msg))
                     {
@@ -82,7 +94,8 @@ namespace AwsSqsServiceAstha
                         Order model = PrepareData(response);
 
                         composite.AddRecordSet<Order>(model, OperationMode.InsertOrUpdaet, "", "", "OrderId", "EC_Order");
-                        composite.AddRecordSet<OrderLine>(model.orderLine, OperationMode.InsertOrUpdaet, "", "", "OrderId,VariantSku", "EC_OrderLine");
+                        //composite.AddRecordSet<OrderLine>(model.orderLine, OperationMode.InsertOrUpdaet, "", "", "OrderId,VariantSku", "EC_OrderLine");
+                        composite.AddRecordSet<OrderLine>(model.orderLine.FindAll(m => m.VariantSku != ""), OperationMode.InsertOrUpdaet, "", "", "OrderId,VariantSku", "EC_OrderLine");
                         composite.AddRecordSet<PaymentDetails>(model.paymentDetails, OperationMode.InsertOrUpdaet, "", "", "OrderId", "EC_PaymentDetails");
                         var res = _dal.InsertUpdateComposite(composite, ref msg);
                         if (!string.IsNullOrEmpty(msg))
@@ -162,6 +175,7 @@ namespace AwsSqsServiceAstha
                 try
                 {
                     Order model = PrepareData(response);
+                    string updateCol = @"OrderLineId,ResponseDate,ParentOrderlineId,TotalVoucherDiscount,OrderId,Description,DerivedStatusCode,DerivedStatus,TotalPromotionDiscount,DeliveryMode,ItemStatus,VariantProductId,ProductId,IsPrimaryProduct,SKU,VariantSku,Quantity,ShippingCost,ShippingVoucherDiscount,ProductTitle,CancelQuantity,IsParentProduct,IsBackOrder,TotalTaxAmount,locationCode,BundleProductId,ProductPrice,StockAction,ReturnStatus,TransferStatus";
 
                     var ObjOrderLine = response.data.orderLineId.Find(a => a.derivedStatusCode == "IC" || a.derivedStatusCode == "ICI");
 
@@ -173,9 +187,28 @@ namespace AwsSqsServiceAstha
                             errMsg = "Order cancel not possible beacuse this order data not exist in our system";
                             return false;
                         }
-                        string updateCol = @"OrderLineId,ResponseDate,ParentOrderlineId,TotalVoucherDiscount,OrderId,Description,DerivedStatusCode,DerivedStatus,TotalPromotionDiscount,DeliveryMode,ItemStatus,VariantProductId,ProductId,IsPrimaryProduct,SKU,VariantSku,Quantity,ShippingCost,ShippingVoucherDiscount,ProductTitle,CancelQuantity,IsParentProduct,IsBackOrder,TotalTaxAmount,locationCode,BundleProductId,ProductPrice,StockAction,ReturnStatus,TransferStatus";
-                        composite.AddRecordSet<OrderLine>(model.orderLine.FindAll((a => a.DerivedStatusCode == "IC" || a.DerivedStatusCode == "ICI")), OperationMode.InsertOrUpdaet, "", updateCol, "OrderId,VariantSku", "EC_OrderLineCancel");
 
+                        List<OrderLine> dbOrderLineLst = _dal.Select<OrderLine>("select * from EC_OrderLineCancel where OrderId='" + response.data.orderId + "'", ref msg);
+                        if (dbOrderLineLst != null && dbOrderLineLst.Count > 0)
+                        {
+                            foreach (var dbOrderLine in dbOrderLineLst)
+                            {
+                                var data = response.data.orderLineId.Find(a => a.VariantSku == dbOrderLine.VariantSku && a.orderId == Convert.ToString(dbOrderLine.OrderId));
+
+                                if (Convert.ToString(dbOrderLine.OrderId) == data.orderId && dbOrderLine.VariantSku == data.VariantSku)
+                                {
+                                    // skip existing data
+                                }
+                                else
+                                {
+                                    composite.AddRecordSet<OrderLine>(model.orderLine.FindAll((a => (a.DerivedStatusCode == "IC" || a.DerivedStatusCode == "ICI") && a.VariantSku == data.VariantSku)), OperationMode.InsertOrUpdaet, "", updateCol, "OrderId,VariantSku", "EC_OrderLineCancel");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            composite.AddRecordSet<OrderLine>(model.orderLine.FindAll((a => a.DerivedStatusCode == "IC" || a.DerivedStatusCode == "ICI")), OperationMode.InsertOrUpdaet, "", updateCol, "OrderId,VariantSku", "EC_OrderLineCancel");
+                        }
                         var res = _dal.InsertUpdateComposite(composite, ref msg);
                         if (!string.IsNullOrEmpty(msg))
                         {
@@ -263,12 +296,12 @@ namespace AwsSqsServiceAstha
                 order.IsBackOrder = item.isBackOrder;
                 order.IsParentProduct = item.isParentProduct;
                 order.IsPrimaryProduct = string.IsNullOrEmpty(item.isPrimaryProduct) ? false : Convert.ToBoolean(item.isPrimaryProduct);
-                order.ItemStatus = "";
+                order.ItemStatus = item.derivedStatusCode;
                 order.locationCode = item.locationCode;
                 order.OrderId = string.IsNullOrEmpty(item.orderId) ? 0 : Convert.ToInt64(item.orderId);
                 order.OrderLineId = string.IsNullOrEmpty(item.orderLineId) ? 0 : Convert.ToInt64(item.orderLineId);
                 order.ParentOrderlineId = Convert.ToInt64(item.parentOrderlineId);
-                order.ProductId = string.IsNullOrEmpty(item.productId) ? "" : item.productId;
+                order.ProductId = 0;
                 order.ProductPrice = Convert.ToDecimal(item.productPrice);
                 order.ProductTitle = item.ProductTitle;
                 order.Quantity = Convert.ToDecimal(item.quantity);
@@ -279,7 +312,7 @@ namespace AwsSqsServiceAstha
                 order.TotalPromotionDiscount = item.totalPromotionDiscount;
                 order.TotalTaxAmount = item.totalTaxAmount;
                 order.TotalVoucherDiscount = Convert.ToDecimal(item.totalVoucherDiscount);
-                order.VariantProductId = string.IsNullOrEmpty(item.variantProductId) ? "" : item.variantProductId;
+                order.VariantProductId = 0;
                 order.VariantSku = item.VariantSku;
                 order.TransferStatus = "N";
                 order.ResponseDate = DateTime.Now;
@@ -361,14 +394,14 @@ namespace AwsSqsServiceAstha
         #region ReturnManager
         public bool ReturnManager(ReturnResponse response, out string errMsg)
         {
-            var orderId = response.returnRequest.orderId;
+            var orderId = response.returnRequestDetails.FirstOrDefault().OrderID;
             errMsg = string.Empty;
             List<string> sqlList = new List<string>();
             try
             {
-                if (response.returnRequest.requestStatus == "R")
+                if (response.returnRequest == "R")
                 {
-                    foreach (var item in response.returnRequest.returnRequestDetails)
+                    foreach (var item in response.returnRequestDetails)
                     {
                         sqlList.Add("Update EC_OrderLineShipment set TransferStatus='N', CancelQty='" + item.returnQty + "'  where OrderID='" + orderId + "' and VariantSKU='" + item.variantSKU + "'");
                     }
@@ -382,7 +415,7 @@ namespace AwsSqsServiceAstha
                 }
                 else
                 {
-                    errMsg = "Return not allocated.because request status:" + response.returnRequest.requestStatus;
+                    errMsg = "Return not allocated.because request status:" + response.returnRequest;
                     return false;
                 }
 
@@ -405,74 +438,84 @@ namespace AwsSqsServiceAstha
                 List<ShippingOrder> lstship = new List<ShippingOrder>();
                 CompositeModel composite = new CompositeModel();
                 errMsg = string.Empty;
-                if (response.Data.ShippingStatus == "D")
+                if (response.ShippingStatus == "D")
                 {
-                    if (response.Data.ShipmentType == "Reverse")
+                    //if (response.ShipmentType == "Reverse")
+                    //{
+                    //    errMsg = "Skipped for reversed shipment. Shipment ID:" + response.data.ShipmentId;
+                    //    return false;
+                    //}
+
+                    foreach (var item in response.ShipmentItems)
                     {
-                        errMsg = "Skipped for reversed shipment. Shipment ID:" + response.Data.ShipmentId;
-                        return false;
-                    }
-                    foreach (var item in response.Data.ShipmentItems)
-                    {
-                        ShippingOrder ship = new ShippingOrder();
-                        ship.BundleProductId = item.BundleProductId;
-                        ship.CategoryId = item.CategoryId;
-                        ship.CategoryName = item.CategoryName;
-                        ship.OrderID = response.Data.OrderId;
-                        ship.OrderLineId = item.OrderLineId;
-                        ship.ParentOrderLineId = item.ParentOrderLineId;
-                        ship.ProductId = string.IsNullOrEmpty(item.ProductId) ? "" : item.ProductId;
-                        ship.Quantity = Convert.ToDecimal(item.Quantity);
-                        ship.ShipmentDetailsId = item.ShipmentDetailsId;
-                        ship.ShippingStatus = response.Data.ShippingStatus;
-                        ship.SKU = item.SKU;
-                        ship.Title = item.Title;
-                        ship.VariantProductId = string.IsNullOrEmpty(item.VariantProductId) ? "" : item.VariantProductId;
-                        ship.VariantSKU = item.VariantSKU;
-                        ship.TransferStatus = "N";
-                        ship.CancelQty = 0;
-                        ship.locationCode = response.Data.LocationCode;
-                        ship.DocketNumber = response.Data.DocketNumber;
-                        ship.ResponseDate = DateTime.Now;
-                        lstship.Add(ship);
+                        List<ShippingOrder> dbOrderLst = _dal.Select<ShippingOrder>("select * from EC_OrderLineShipment where OrderID='" + item.OrderID + "' AND VariantSKU ='" + item.VariantSKU + "' AND locationCode = '" + item.locationCode + "' ", ref msg);
+                        if (dbOrderLst == null || dbOrderLst.Count == 0)
+                        {
+
+                            ShippingOrder ship = new ShippingOrder();
+                            ship.BundleProductId = item.BundleProductId;
+                            ship.CategoryId = item.CategoryId;
+                            ship.CategoryName = item.CategoryName;
+                            ship.OrderID = item.OrderID;
+                            ship.OrderLineId = item.OrderLineId;
+                            ship.ParentOrderLineId = item.ParentOrderLineId;
+                            ship.ProductId = 0;
+                            ship.Quantity = Convert.ToDecimal(item.Quantity);
+                            ship.ShipmentDetailsId = item.ShipmentDetailsId;
+                            ship.ShippingStatus = response.ShippingStatus;
+                            ship.SKU = item.SKU;
+                            ship.Title = item.Title;
+                            ship.VariantProductId = 0;
+                            ship.VariantSKU = item.VariantSKU;
+                            ship.TransferStatus = "N";
+                            ship.CancelQty = 0;
+                            ship.locationCode = item.locationCode;
+                            ship.DocketNumber = string.IsNullOrEmpty(item.DocketNumber) ? "" : item.DocketNumber;
+                            ship.ResponseDate = DateTime.Now;
+                            lstship.Add(ship);
+                        }
                     }
                     composite.AddRecordSet<ShippingOrder>(lstship, OperationMode.Insert, "", "", "", "EC_OrderLineShipment");
                 }
 
-                if (response.Data.ShippingStatus == "O")
+                if (response.ShippingStatus == "O")
                 {
                     List<OrderLine> lstOrderHistory = new List<OrderLine>();
-                    foreach (var item in response.Data.ShipmentItems)
+                    foreach (var item in response.ShipmentItems)
                     {
-                        OrderLine order = new OrderLine();
-                        order.BundleProductId = 0;
-                        order.DeliveryMode = "";
-                        order.DerivedStatus = "RTO";
-                        order.DerivedStatusCode = "O";
-                        order.Description = item.Title;
-                        order.IsBackOrder = true;
-                        order.IsParentProduct = false;
-                        order.IsPrimaryProduct = false;
-                        order.ItemStatus = "";
-                        order.locationCode = response.Data.LocationCode;
-                        order.OrderId = Convert.ToInt64(response.Data.OrderId);
-                        order.OrderLineId = Convert.ToInt64(item.OrderLineId);
-                        order.ParentOrderlineId = 0;
-                        order.ProductId = string.IsNullOrEmpty(item.ProductId) ? "" : item.ProductId;
-                        order.ProductPrice = 0;
-                        order.ProductTitle = item.Title;
-                        order.Quantity = Convert.ToDecimal(item.Quantity);
-                        order.ShippingCost = 0;
-                        order.ShippingVoucherDiscount = 0;
-                        order.SKU = item.SKU;
-                        order.StockAction = "";
-                        order.TotalPromotionDiscount = 0;
-                        order.TotalTaxAmount = 0;
-                        order.TotalVoucherDiscount = 0;
-                        order.VariantProductId = string.IsNullOrEmpty(item.VariantProductId) ? "" : item.VariantProductId;
-                        order.VariantSku = item.VariantSKU;
-                        order.TransferStatus = "N";
-                        lstOrderHistory.Add(order);
+                        List<OrderLine> dbOrderLst = _dal.Select<OrderLine>("select * from EC_OrderLineHistory where OrderID='" + item.OrderID + "' AND VariantSKU ='" + item.VariantSKU + "' AND locationCode = '" + item.locationCode + "' ", ref msg);
+                        if (dbOrderLst == null || dbOrderLst.Count == 0)
+                        {
+                            OrderLine order = new OrderLine();
+                            order.BundleProductId = 0;
+                            order.DeliveryMode = "";
+                            order.DerivedStatus = "RTO";
+                            order.DerivedStatusCode = "O";
+                            order.Description = item.Title;
+                            order.IsBackOrder = true;
+                            order.IsParentProduct = false;
+                            order.IsPrimaryProduct = false;
+                            order.ItemStatus = order.DerivedStatusCode;
+                            order.locationCode = item.locationCode;
+                            order.OrderId = string.IsNullOrEmpty(item.OrderID) ? 0 : Convert.ToInt64(item.OrderID);
+                            order.OrderLineId = Convert.ToInt64(item.OrderLineId);
+                            order.ParentOrderlineId = 0;
+                            order.ProductId = 0;
+                            order.ProductPrice = 0;
+                            order.ProductTitle = item.Title;
+                            order.Quantity = Convert.ToDecimal(item.Quantity);
+                            order.ShippingCost = 0;
+                            order.ShippingVoucherDiscount = 0;
+                            order.SKU = item.SKU;
+                            order.StockAction = "";
+                            order.TotalPromotionDiscount = 0;
+                            order.TotalTaxAmount = 0;
+                            order.TotalVoucherDiscount = 0;
+                            order.VariantProductId = 0;
+                            order.VariantSku = item.VariantSKU;
+                            order.TransferStatus = "N";
+                            lstOrderHistory.Add(order);
+                        }
                     }
                     composite.AddRecordSet<OrderLine>(lstOrderHistory, OperationMode.Insert, "", "", "", "EC_OrderLineHistory");
                 }
@@ -562,7 +605,6 @@ namespace AwsSqsServiceAstha
             catch (Exception e)
             {
                 throw e;
-                return false;
             }
             // var response = _dal.Select<Order>("select top(1) OrderId from EC_Order", ref msg).Count;
             // return response > 0 ? true : false;
