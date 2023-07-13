@@ -24,6 +24,7 @@ namespace AwsSqsServiceAstha.QResponse
         public string suggestedReturnAction { get; set; }
         public string productID { get; set; }
         public string returnQty { get; set; }
+        public string CancelQty { get; set; }        
         public string orderItemId { get; set; }
         public string isReceived { get; set; }
         public string isTaxable { get; set; }

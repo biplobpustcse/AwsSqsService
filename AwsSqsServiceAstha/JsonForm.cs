@@ -39,9 +39,11 @@ namespace AwsSqsServiceAstha
                 try
                 {
                     var jsonString = JsonObjectTxtBox.Text;
+                    dynamic obj = JsonConvert.DeserializeObject(jsonString);
+                    var data = JsonConvert.SerializeObject(obj);
                     try
                     {
-                        json = JsonConvert.DeserializeObject<OrderResponse>(jsonString);
+                        json = JsonConvert.DeserializeObject<OrderResponse>(data);
                     }
                     catch (Exception ex)
                     {
@@ -73,9 +75,11 @@ namespace AwsSqsServiceAstha
                 try
                 {
                     var jsonString = JsonObjectTxtBox.Text;
+                    dynamic obj = JsonConvert.DeserializeObject(jsonString);
+                    var data = JsonConvert.SerializeObject(obj);
                     try
                     {
-                        json = JsonConvert.DeserializeObject<ProductResponse>(jsonString);
+                        json = JsonConvert.DeserializeObject<ProductResponse>(data);
                     }
                     catch (Exception ex)
                     {
@@ -92,7 +96,8 @@ namespace AwsSqsServiceAstha
                     {
                         MessageBox.Show("Response Invalid. See log for more details");
                     }
-                    repo.LogManager(jsonString, errMsg, response, "ProductID:" + json.newData.productId, json.newData.productId, StaticDetails.VariantSku);
+                    string variantSkuAll = string.Join(",", json.products.Select(x => string.IsNullOrEmpty(x.VariantSku) ? x.Sku : x.VariantSku));
+                    repo.LogManager(jsonString, errMsg, response, "ProductID:" + variantSkuAll, variantSkuAll, StaticDetails.VariantSku);
                 }
                 catch (Exception ex)
                 {
@@ -107,10 +112,10 @@ namespace AwsSqsServiceAstha
                 {
                     var jsonString = JsonObjectTxtBox.Text;
                     dynamic obj = JsonConvert.DeserializeObject(jsonString);
-                    var ss = JsonConvert.SerializeObject(obj.data);
+                    var data = JsonConvert.SerializeObject(obj);
                     try
                     {
-                        json = JsonConvert.DeserializeObject<ReturnResponse>(ss);
+                        json = JsonConvert.DeserializeObject<ReturnResponse>(data);
                     }
                     catch (Exception ex)
                     {
@@ -139,9 +144,11 @@ namespace AwsSqsServiceAstha
                 try
                 {
                     var jsonString = JsonObjectTxtBox.Text;
+                    dynamic obj = JsonConvert.DeserializeObject(jsonString);
+                    var data = JsonConvert.SerializeObject(obj);
                     try
                     {
-                        json = JsonConvert.DeserializeObject<ShipmentResponse>(jsonString);
+                        json = JsonConvert.DeserializeObject<ShipmentResponse>(data);
                     }
                     catch (Exception ex)
                     {

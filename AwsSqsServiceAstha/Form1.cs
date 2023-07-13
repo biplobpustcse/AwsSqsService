@@ -105,8 +105,9 @@ namespace AwsSqsServiceAstha
                             {
                                 try
                                 {
-                                    // Serialize our concrete class into a JSON String   
-                                    var jsonString = item.data.ToString();
+                                    // Serialize our concrete class into a JSON String
+                                    var jsonString = "{\r\n   \"returnRequest\":\"R\",\r\n   \"returnRequestDetails\":[\r\n      {\r\n         \"CancelQty\":\"1\",\r\n         \"SKU\":\"07110A4044 \",\r\n         \"VariantSKU\":\"07110A4044\",\r\n         \"OrderID\":\"23071300003\",\r\n         \"OrderLineId\":\"230713000031\",\r\n         \"locationCode\":\"64941bd8ef4d1be2891f3ccc\"\r\n      },\r\n      {\r\n         \"CancelQty\":\"1\",\r\n         \"SKU\":\"07111A2340\",\r\n         \"VariantSKU\":\"07111A2340\",\r\n         \"OrderID\":\"23071300003\",\r\n         \"OrderLineId\":\"230713000032\",\r\n         \"locationCode\":\"64941bd8ef4d1be2891f3ccc\"\r\n      }\r\n   ]\r\n}";
+                                    //var jsonString = item.data.ToString();
                                     var json = JsonConvert.DeserializeObject<ReturnResponse>(jsonString);
                                     var response = repo.ReturnManager(json, out string errMsg);
                                     repo.LogManager(jsonString, errMsg, response, message.MessageId, json.returnRequestDetails.FirstOrDefault().OrderID, StaticDetails.ReturnOrder);
@@ -128,7 +129,7 @@ namespace AwsSqsServiceAstha
                                     var jsonString = item.data.ToString();
                                     //var jsonString = "{\r\n   \"ShippingStatus\":\"O\",\r\n   \"ShipmentItems\":[\r\n      {\r\n         \"OrderID\":\"23070500011\",\r\n         \"OrderLineId\":\"230705000111\",\r\n         \"Quantity\":\"1\",\r\n         \"ShipmentDetailsId\":\"5851451851\",\r\n         \"ShippingStatus\":\"O\",\r\n         \"SKU\":\"91118A67\",\r\n         \"VariantSKU\":\"91118A6720\",\r\n         \"Title\":\"Sprint Mens Shoe\",\r\n         \"locationCode\":\"G184\"\r\n      }\r\n   ]\r\n}";
                                     var json = JsonConvert.DeserializeObject<ShipmentResponse>(jsonString);
-                                    if (json.ShipmentItems != null && json.ShipmentItems.Count >0)
+                                    if (json.ShipmentItems != null && json.ShipmentItems.Count > 0)
                                     {
                                         var response = repo.ShipmentManager(json, out string errMsg);
                                         repo.LogManager(jsonString, errMsg, response, message.MessageId, json.ShipmentItems.FirstOrDefault().OrderID, StaticDetails.ShipmentOrder);
@@ -145,14 +146,14 @@ namespace AwsSqsServiceAstha
                                     var jsonString = JsonConvert.SerializeObject(item.data);
                                     repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Return", "Shipment Order", StaticDetails.ShipmentOrder);
                                 }
-                            }                            
+                            }
                         }
                     }
                 } while (isCloseForm == false);
             }
             catch (Exception ex)
             {
-                
+
             }
         }
 

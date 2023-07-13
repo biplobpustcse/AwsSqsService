@@ -403,7 +403,7 @@ namespace AwsSqsServiceAstha
                 {
                     foreach (var item in response.returnRequestDetails)
                     {
-                        sqlList.Add("Update EC_OrderLineShipment set TransferStatus='N', CancelQty='" + item.returnQty + "'  where OrderID='" + orderId + "' and VariantSKU='" + item.variantSKU + "'");
+                        sqlList.Add("Update EC_OrderLineShipment set TransferStatus='N', CancelQty='" + item.CancelQty + "'  where OrderID='" + orderId + "' and VariantSKU='" + item.variantSKU + "'");
                     }
                     bool resp = _dal.ExecuteQuery(sqlList, ref msg);
                     if (resp == false || !string.IsNullOrEmpty(msg))
@@ -470,7 +470,7 @@ namespace AwsSqsServiceAstha
                             ship.TransferStatus = "N";
                             ship.CancelQty = 0;
                             ship.locationCode = item.locationCode;
-                            ship.DocketNumber = string.IsNullOrEmpty(item.DocketNumber) ? "" : item.DocketNumber;
+                            ship.DocketNumber = item.ShipmentDetailsId;
                             ship.ResponseDate = DateTime.Now;
                             lstship.Add(ship);
                         }
