@@ -39,8 +39,9 @@ namespace AwsSqsServiceAstha.QResponse
         public string averageWeight { get; set; }
         public string SKU { get; set; }
         public string productPrice { get; set; }
-        public string variantSKU { get; set; }
+        public string VariantSKU { get; set; }
         public string refundAmount { get; set; }
+        public string locationCode { get; set; }
     }
 
     public class TaxDetails

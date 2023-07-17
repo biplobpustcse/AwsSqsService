@@ -403,7 +403,11 @@ namespace AwsSqsServiceAstha
                 {
                     foreach (var item in response.returnRequestDetails)
                     {
-                        sqlList.Add("Update EC_OrderLineShipment set TransferStatus='N', CancelQty='" + item.CancelQty + "'  where OrderID='" + orderId + "' and VariantSKU='" + item.variantSKU + "'");
+                        List<ShippingOrder> dbOrderLst = _dal.Select<ShippingOrder>("select * from EC_OrderLineShipment where OrderID='" + item.OrderID + "' AND VariantSKU ='" + item.VariantSKU + "' AND locationCode = '" + item.locationCode + "' ", ref msg);
+                        if (dbOrderLst == null || dbOrderLst.Count == 0)
+                        {
+                            sqlList.Add("Update EC_OrderLineShipment set TransferStatus='N', CancelQty='" + item.CancelQty + "'  where OrderID='" + orderId + "' and VariantSKU='" + item.VariantSKU + "' AND locationCode = '" + item.locationCode + "' ");
+                        }
                     }
                     bool resp = _dal.ExecuteQuery(sqlList, ref msg);
                     if (resp == false || !string.IsNullOrEmpty(msg))
