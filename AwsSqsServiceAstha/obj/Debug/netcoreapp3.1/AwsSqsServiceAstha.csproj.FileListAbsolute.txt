@@ -38,3 +38,43 @@ F:\Apex\Project\AwsSqsServiceAstha\AwsSqsServiceAstha\obj\Debug\netcoreapp3.1\Aw
 F:\Apex\Project\AwsSqsServiceAstha\AwsSqsServiceAstha\obj\Debug\netcoreapp3.1\AwsSqsServiceAstha.Form1.resources
 F:\Apex\Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\AWSSDK.Core.dll
 F:\Apex\Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\AWSSDK.SQS.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\AwsSqsServiceAstha.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\AwsSqsServiceAstha.exe
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\AwsSqsServiceAstha.dll.config
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\AwsSqsServiceAstha.deps.json
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\AwsSqsServiceAstha.runtimeconfig.json
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\AwsSqsServiceAstha.runtimeconfig.dev.json
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\AWSSDK.Core.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\AWSSDK.SQS.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\Microsoft.Azure.Amqp.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\Microsoft.Azure.ServiceBus.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\Microsoft.Azure.Services.AppAuthentication.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Clients.ActiveDirectory.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.JsonWebTokens.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Logging.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Tokens.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\System.Data.SqlClient.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\System.IdentityModel.Tokens.Jwt.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\runtimes\win-arm64\native\sni.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\runtimes\win-x64\native\sni.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\sni.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\FIK.DAL.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\FIK.DAL.pdb
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\obj\Debug\netcoreapp3.1\AwsSqsServiceAstha.csproj.AssemblyReference.cache
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\obj\Debug\netcoreapp3.1\AwsSqsServiceAstha.Form1.resources
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\obj\Debug\netcoreapp3.1\AwsSqsServiceAstha.JsonForm.resources
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\obj\Debug\netcoreapp3.1\AwsSqsServiceAstha.Properties.Resources.resources
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\obj\Debug\netcoreapp3.1\AwsSqsServiceAstha.csproj.GenerateResource.cache
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\obj\Debug\netcoreapp3.1\AwsSqsServiceAstha.GeneratedMSBuildEditorConfig.editorconfig
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\obj\Debug\netcoreapp3.1\AwsSqsServiceAstha.AssemblyInfoInputs.cache
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\obj\Debug\netcoreapp3.1\AwsSqsServiceAstha.AssemblyInfo.cs
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\obj\Debug\netcoreapp3.1\AwsSqsServiceAstha.csproj.CoreCompileInputs.cache
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\obj\Debug\netcoreapp3.1\AwsSqsServiceAstha.csproj.CopyComplete
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\obj\Debug\netcoreapp3.1\AwsSqsServiceAstha.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\obj\Debug\netcoreapp3.1\AwsSqsServiceAstha.pdb
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\obj\Debug\netcoreapp3.1\AwsSqsServiceAstha.genruntimeconfig.cache
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\AwsSqsServiceAstha\bin\Debug\netcoreapp3.1\AwsSqsServiceAstha.pdb

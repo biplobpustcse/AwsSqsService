@@ -18,3 +18,13 @@ F:\Apex\Project\AwsSqsServiceAstha\FIK.DAL\obj\Debug\netcoreapp3.1\FIK.DAL.Assem
 F:\Apex\Project\AwsSqsServiceAstha\FIK.DAL\obj\Debug\netcoreapp3.1\FIK.DAL.csproj.CoreCompileInputs.cache
 F:\Apex\Project\AwsSqsServiceAstha\FIK.DAL\obj\Debug\netcoreapp3.1\FIK.DAL.dll
 F:\Apex\Project\AwsSqsServiceAstha\FIK.DAL\obj\Debug\netcoreapp3.1\FIK.DAL.pdb
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\FIK.DAL\bin\Debug\netcoreapp3.1\FIK.DAL.deps.json
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\FIK.DAL\bin\Debug\netcoreapp3.1\FIK.DAL.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\FIK.DAL\bin\Debug\netcoreapp3.1\FIK.DAL.pdb
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\FIK.DAL\obj\Debug\netcoreapp3.1\FIK.DAL.csproj.AssemblyReference.cache
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\FIK.DAL\obj\Debug\netcoreapp3.1\FIK.DAL.GeneratedMSBuildEditorConfig.editorconfig
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\FIK.DAL\obj\Debug\netcoreapp3.1\FIK.DAL.AssemblyInfoInputs.cache
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\FIK.DAL\obj\Debug\netcoreapp3.1\FIK.DAL.AssemblyInfo.cs
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\FIK.DAL\obj\Debug\netcoreapp3.1\FIK.DAL.csproj.CoreCompileInputs.cache
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\FIK.DAL\obj\Debug\netcoreapp3.1\FIK.DAL.dll
+F:\Apex\Project\Apex Astha Project\AwsSqsServiceAstha\FIK.DAL\obj\Debug\netcoreapp3.1\FIK.DAL.pdb

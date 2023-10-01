@@ -28,74 +28,16 @@ namespace AwsSqsServiceAstha
             {
                 string updateCol = @"OrderLineId,ResponseDate,ParentOrderlineId,TotalVoucherDiscount,OrderId,Description,DerivedStatusCode,DerivedStatus,TotalPromotionDiscount,DeliveryMode,ItemStatus,VariantProductId,ProductId,IsPrimaryProduct,SKU,VariantSku,Quantity,ShippingCost,ShippingVoucherDiscount,ProductTitle,CancelQuantity,IsParentProduct,IsBackOrder,TotalTaxAmount,locationCode,BundleProductId,ProductPrice,StockAction,ReturnStatus,TransferStatus";
 
+                #region #####new order insert#####
                 List<OrderLine> dbOrderLst = _dal.Select<OrderLine>("select * from EC_OrderLine where OrderId='" + response.data.orderId + "'", ref msg);
-                if (dbOrderLst != null && dbOrderLst.Count > 0)
-                {
-                    foreach (var dbOrder in dbOrderLst)
-                    {
-                        if (response.data.orderLineId.Count == 0)
-                        {
-                            throw new Exception("orderLineId list can not be empty for orderID:" + response.data.orderId);
-                        }
-                        var data = response.data.orderLineId.Find(a => a.VariantSku == dbOrder.VariantSku && a.orderId == Convert.ToString(dbOrder.OrderId));
-
-                        if (Convert.ToString(dbOrder.OrderId) == data.orderId && dbOrder.VariantSku == data.VariantSku && dbOrder.locationCode == data.locationCode)
-                        {
-                            if (dbOrder.TransferStatus == "Y")
-                            {
-                                dbOrder.TransferStatus = "Y";
-                                dbOrder.ResponseDate = DateTime.Now;
-                                composite.AddRecordSet<OrderLine>(dbOrder, OperationMode.Update, "", updateCol, "OrderId,VariantSku", "EC_OrderLine");
-
-                            }
-                            else if (dbOrder.TransferStatus == "N")
-                            {
-                                dbOrder.TransferStatus = "N";
-                                dbOrder.ResponseDate = DateTime.Now;
-                                composite.AddRecordSet<OrderLine>(dbOrder, OperationMode.Update, "", updateCol, "OrderId,VariantSku", "EC_OrderLine");
-                            }
-                        }
-                        else if (Convert.ToString(dbOrder.OrderId) == data.orderId && dbOrder.VariantSku == data.VariantSku && dbOrder.locationCode != data.locationCode)
-                        {
-                            Order model = PrepareData(response);
-                            model.TransferStatus = "N";
-
-                            composite.AddRecordSet<OrderLine>(model.orderLine.Find(m => m.VariantSku == dbOrder.VariantSku), OperationMode.Update, "", updateCol, "OrderId,VariantSku", "EC_OrderLine");
-                            if (dbOrder.TransferStatus == "N")
-                            {
-                                dbOrder.TransferStatus = "Skip";
-                                dbOrder.ResponseDate = DateTime.Now;
-                                composite.AddRecordSet<OrderLine>(dbOrder, OperationMode.Insert, "AutoOrderId", "", "OrderId,VariantSku", "EC_OrderLineHistory");
-                            }
-                            if (dbOrder.TransferStatus == "Y")
-                            {
-                                dbOrder.ResponseDate = DateTime.Now;
-                                dbOrder.TransferStatus = "N";
-                                composite.AddRecordSet<OrderLine>(dbOrder, OperationMode.Insert, "", "", "OrderId,VariantSku", "EC_OrderLineHistory");
-                            }
-                        }
-                    }
-                    if (dbOrderLst.Count != response.data.orderLineId.Count)
-                    {
-                        Order model = PrepareData(response);
-                        composite.AddRecordSet<OrderLine>(model.orderLine.Where(x => x.VariantSku != "" && dbOrderLst.All(y => y.VariantSku != x.VariantSku)).ToList(), OperationMode.InsertOrUpdaet, "", "", "OrderId,VariantSku", "EC_OrderLine");
-                    }
-                    var lineResponse = _dal.InsertUpdateComposite(composite, ref msg);
-                    if (!string.IsNullOrEmpty(msg))
-                    {
-                        errMsg = msg;
-                    }
-                    return lineResponse;
-                }
-                else
+                if (dbOrderLst == null || dbOrderLst.Count == 0)
                 {
                     try
                     {
                         Order model = PrepareData(response);
 
                         composite.AddRecordSet<Order>(model, OperationMode.InsertOrUpdaet, "", "", "OrderId", "EC_Order");
-                        //composite.AddRecordSet<OrderLine>(model.orderLine, OperationMode.InsertOrUpdaet, "", "", "OrderId,VariantSku", "EC_OrderLine");
-                        composite.AddRecordSet<OrderLine>(model.orderLine.FindAll(m => m.VariantSku != ""), OperationMode.InsertOrUpdaet, "", "", "OrderId,VariantSku", "EC_OrderLine");
+                        composite.AddRecordSet<OrderLine>(model.orderLine.FindAll(m => m.VariantSku != ""), OperationMode.InsertOrUpdaet, "", "", "OrderId,VariantSku,OrderLineId,locationCode", "EC_OrderLine");
                         composite.AddRecordSet<PaymentDetails>(model.paymentDetails, OperationMode.InsertOrUpdaet, "", "", "OrderId", "EC_PaymentDetails");
                         var res = _dal.InsertUpdateComposite(composite, ref msg);
                         if (!string.IsNullOrEmpty(msg))
@@ -111,9 +53,77 @@ namespace AwsSqsServiceAstha
                         return false;
                     }
                 }
+                #endregion
+
+                #region #####change any data or partial order insert#####
+                foreach (var orderLineData in response.data.orderLineId)
+                {
+                    OrderLine dbOrderLine = _dal.Select<OrderLine>("select * from EC_OrderLine where OrderId='" + orderLineData.orderId + "' AND VariantSku = '" + orderLineData.VariantSku + "' AND OrderLineId = '" + orderLineData.orderLineId + "' ", ref msg).FirstOrDefault();
+
+                    if (dbOrderLine != null)
+                    {
+                        var data = response.data.orderLineId.Find(a => a.VariantSku == dbOrderLine.VariantSku && Convert.ToInt64(a.orderLineId) == dbOrderLine.OrderLineId && a.orderId == Convert.ToString(dbOrderLine.OrderId));
+                        if (data != null)
+                        {
+                            if (dbOrderLine.locationCode == data.locationCode)
+                            {
+                                if (dbOrderLine.TransferStatus == "Y")
+                                {
+                                    dbOrderLine.TransferStatus = "Y";
+                                    dbOrderLine.ResponseDate = DateTime.Now;
+                                    composite.AddRecordSet<OrderLine>(dbOrderLine, OperationMode.Update, "", updateCol, "OrderId,VariantSku,OrderLineId,locationCode", "EC_OrderLine");
+
+                                }
+                                else if (dbOrderLine.TransferStatus == "N")
+                                {
+                                    dbOrderLine.TransferStatus = "N";
+                                    dbOrderLine.ResponseDate = DateTime.Now;
+                                    composite.AddRecordSet<OrderLine>(dbOrderLine, OperationMode.Update, "", updateCol, "OrderId,VariantSku,OrderLineId,locationCode", "EC_OrderLine");
+                                }
+                            }
+                            else if (dbOrderLine.locationCode != data.locationCode)
+                            {
+                                Order model = PrepareData(response);
+                                model.TransferStatus = "N";
+
+                                composite.AddRecordSet<OrderLine>(model.orderLine.Find(m => m.OrderId == dbOrderLine.OrderId && m.VariantSku == dbOrderLine.VariantSku && m.OrderLineId == Convert.ToInt64(orderLineData.orderLineId)), OperationMode.Update, "", updateCol, "OrderId,VariantSku,OrderLineId", "EC_OrderLine");
+                                if (dbOrderLine.TransferStatus == "N")
+                                {
+                                    dbOrderLine.TransferStatus = "Skip";
+                                    dbOrderLine.ResponseDate = DateTime.Now;
+                                    composite.AddRecordSet<OrderLine>(dbOrderLine, OperationMode.Insert, "AutoOrderId", "", "OrderId,VariantSku,OrderLineId", "EC_OrderLineHistory");
+                                }
+                                if (dbOrderLine.TransferStatus == "Y")
+                                {
+                                    dbOrderLine.ResponseDate = DateTime.Now;
+                                    dbOrderLine.TransferStatus = "N";
+                                    composite.AddRecordSet<OrderLine>(dbOrderLine, OperationMode.Insert, "", "", "OrderId,VariantSku,OrderLineId", "EC_OrderLineHistory");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("DB orderLine and AWS orderLine not match.");
+                        }
+                    }
+                    else
+                    {
+                        Order model = PrepareData(response);
+                        composite.AddRecordSet<OrderLine>(model.orderLine.Where(x => x.VariantSku != "" && x.OrderLineId == Convert.ToInt64(orderLineData.orderLineId)).ToList(), OperationMode.InsertOrUpdaet, "", "", "OrderId,VariantSku,OrderLineId", "EC_OrderLine");
+                    }
+
+                }
+                var lineResponse = _dal.InsertUpdateComposite(composite, ref msg);
+                if (!string.IsNullOrEmpty(msg))
+                {
+                    errMsg = msg;
+                }
+                return lineResponse;
+
+                #endregion
 
             }
-            // orginal order id logic
+            #region #####orginal order id logic#####
             else if (response.data.status == "A" && response.actionDetails != null && response.actionDetails.type == "ORDER_ALLOCATION" && !string.IsNullOrEmpty(response.data.originalOrderId))
             {
                 //string updateCol = @"OrderLineId,ResponseDate,ParentOrderlineId,TotalVoucherDiscount,OrderId,Description,DerivedStatusCode,DerivedStatus,TotalPromotionDiscount,DeliveryMode,ItemStatus,VariantProductId,ProductId,IsPrimaryProduct,SKU,VariantSku,Quantity,ShippingCost,ShippingVoucherDiscount,ProductTitle,CancelQuantity,IsParentProduct,IsBackOrder,TotalTaxAmount,locationCode,BundleProductId,ProductPrice,StockAction,ReturnStatus,TransferStatus";
@@ -147,7 +157,7 @@ namespace AwsSqsServiceAstha
                 {
                     Order modelNew = PrepareData(response);
                     composite.AddRecordSet<Order>(modelNew, OperationMode.InsertOrUpdaet, "", "", "OrderId", "EC_Order");
-                    composite.AddRecordSet<OrderLine>(modelNew.orderLine, OperationMode.InsertOrUpdaet, "", "", "OrderId,VariantSku", "EC_OrderLine");
+                    composite.AddRecordSet<OrderLine>(modelNew.orderLine, OperationMode.InsertOrUpdaet, "", "", "OrderId,VariantSku,locationCode", "EC_OrderLine");
                     composite.AddRecordSet<PaymentDetails>(modelNew.paymentDetails, OperationMode.InsertOrUpdaet, "", "", "OrderId", "EC_PaymentDetails");
                 }
                 #endregion
@@ -168,7 +178,9 @@ namespace AwsSqsServiceAstha
                     return false;
                 }
             }
-            //order cancel block
+            #endregion
+
+            #region #####order cancel block#####
             else if (response.changedAttributes != null)
             {
 
@@ -193,21 +205,25 @@ namespace AwsSqsServiceAstha
                         {
                             foreach (var dbOrderLine in dbOrderLineLst)
                             {
-                                var data = response.data.orderLineId.Find(a => a.VariantSku == dbOrderLine.VariantSku && a.orderId == Convert.ToString(dbOrderLine.OrderId));
+                                var data = response.data.orderLineId.Find(a => a.VariantSku == dbOrderLine.VariantSku && a.locationCode == dbOrderLine.locationCode && a.orderId == Convert.ToString(dbOrderLine.OrderId));
 
-                                if (Convert.ToString(dbOrderLine.OrderId) == data.orderId && dbOrderLine.VariantSku == data.VariantSku)
+                                if (data == null)
+                                {
+                                    composite.AddRecordSet<OrderLine>(model.orderLine.FindAll((a => a.DerivedStatusCode == "IC" || a.DerivedStatusCode == "ICI")), OperationMode.InsertOrUpdaet, "", updateCol, "OrderId,VariantSku,locationCode", "EC_OrderLineCancel");
+                                }
+                                else if (Convert.ToString(dbOrderLine.OrderId) == data.orderId && dbOrderLine.VariantSku == data.VariantSku && dbOrderLine.locationCode == data.locationCode)
                                 {
                                     // skip existing data
                                 }
                                 else
                                 {
-                                    composite.AddRecordSet<OrderLine>(model.orderLine.FindAll((a => (a.DerivedStatusCode == "IC" || a.DerivedStatusCode == "ICI") && a.VariantSku == data.VariantSku)), OperationMode.InsertOrUpdaet, "", updateCol, "OrderId,VariantSku", "EC_OrderLineCancel");
+                                    composite.AddRecordSet<OrderLine>(model.orderLine.FindAll((a => (a.DerivedStatusCode == "IC" || a.DerivedStatusCode == "ICI") && a.VariantSku == data.VariantSku && a.locationCode == data.locationCode)), OperationMode.InsertOrUpdaet, "", updateCol, "OrderId,VariantSku,locationCode", "EC_OrderLineCancel");
                                 }
                             }
                         }
                         else
                         {
-                            composite.AddRecordSet<OrderLine>(model.orderLine.FindAll((a => a.DerivedStatusCode == "IC" || a.DerivedStatusCode == "ICI")), OperationMode.InsertOrUpdaet, "", updateCol, "OrderId,VariantSku", "EC_OrderLineCancel");
+                            composite.AddRecordSet<OrderLine>(model.orderLine.FindAll((a => a.DerivedStatusCode == "IC" || a.DerivedStatusCode == "ICI")), OperationMode.InsertOrUpdaet, "", updateCol, "OrderId,VariantSku,locationCode", "EC_OrderLineCancel");
                         }
                         var res = _dal.InsertUpdateComposite(composite, ref msg);
                         if (!string.IsNullOrEmpty(msg))
@@ -230,8 +246,7 @@ namespace AwsSqsServiceAstha
                     return false;
                 }
             }
-
-
+            #endregion
 
             else
             {
@@ -331,7 +346,14 @@ namespace AwsSqsServiceAstha
                 model.currencyCode = item.currencyCode;
                 model.OrderId = orderId;
                 model.paymentDate = Convert.ToDateTime(item.paymentDate);
-                model.PaymentDetailsId = Convert.ToInt64(item.paymentDetailsId);
+                if (string.IsNullOrEmpty(item.paymentDetailsId))
+                {
+                    throw new Exception("paymentDetailsId is required!!!");
+                }
+                else
+                {
+                    model.PaymentDetailsId = Convert.ToInt64(item.paymentDetailsId);
+                }
                 model.PaymentOption = item.paymentOption;
                 model.PaymentStatus = item.paymentStatus;
                 //model.PaymentType = item.paymentType;
@@ -403,7 +425,7 @@ namespace AwsSqsServiceAstha
                 {
                     foreach (var item in response.returnRequestDetails)
                     {
-                        List<ShippingOrder> dbOrderLst = _dal.Select<ShippingOrder>("select * from EC_OrderLineShipment where OrderID='" + item.OrderID + "' AND VariantSKU ='" + item.VariantSKU + "' AND locationCode = '" + item.locationCode + "' ", ref msg);
+                        List<ShippingOrder> dbOrderLst = _dal.Select<ShippingOrder>("select * from EC_OrderLineShipment where CancelQty > 0 AND OrderID='" + item.OrderID + "' AND VariantSKU ='" + item.VariantSKU + "' AND locationCode = '" + item.locationCode + "' ", ref msg);
                         if (dbOrderLst == null || dbOrderLst.Count == 0)
                         {
                             sqlList.Add("Update EC_OrderLineShipment set TransferStatus='N', CancelQty='" + item.CancelQty + "'  where OrderID='" + orderId + "' and VariantSKU='" + item.VariantSKU + "' AND locationCode = '" + item.locationCode + "' ");

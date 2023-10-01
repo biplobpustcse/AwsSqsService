@@ -56,6 +56,10 @@ namespace AwsSqsServiceAstha
                     {
                         MessageBox.Show("Operation Successfull");
                     }
+                    else if (response == false && !string.IsNullOrEmpty(errMsg))
+                    {
+                        MessageBox.Show("ORDER:" + errMsg);
+                    }
                     else
                     {
                         MessageBox.Show("Response Invalid. See log for more details");
@@ -92,6 +96,10 @@ namespace AwsSqsServiceAstha
                     {
                         MessageBox.Show("Operation Successfull");
                     }
+                    else if (response == false && !string.IsNullOrEmpty(errMsg))
+                    {
+                        MessageBox.Show("ARTICLE:" + errMsg);
+                    }
                     else
                     {
                         MessageBox.Show("Response Invalid. See log for more details");
@@ -127,6 +135,10 @@ namespace AwsSqsServiceAstha
                     {
                         MessageBox.Show("Operation Successfull");
                     }
+                    else if (response == false && !string.IsNullOrEmpty(errMsg))
+                    {
+                        MessageBox.Show("RETURN:" + errMsg);
+                    }
                     else
                     {
                         MessageBox.Show("Response Invalid. See log for more details");
@@ -160,6 +172,10 @@ namespace AwsSqsServiceAstha
                     if (response == true && string.IsNullOrEmpty(errMsg))
                     {
                         MessageBox.Show("Operation Successfull");
+                    }
+                    else if (response == false && !string.IsNullOrEmpty(errMsg))
+                    {
+                        MessageBox.Show("SHIPMENT:" + errMsg);
                     }
                     else
                     {
