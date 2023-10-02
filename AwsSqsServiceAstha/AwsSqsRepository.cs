@@ -187,11 +187,9 @@ namespace AwsSqsServiceAstha
                 try
                 {
                     Order model = PrepareData(response);
-                    string updateCol = @"OrderLineId,ResponseDate,ParentOrderlineId,TotalVoucherDiscount,OrderId,Description,DerivedStatusCode,DerivedStatus,TotalPromotionDiscount,DeliveryMode,ItemStatus,VariantProductId,ProductId,IsPrimaryProduct,SKU,VariantSku,Quantity,ShippingCost,ShippingVoucherDiscount,ProductTitle,CancelQuantity,IsParentProduct,IsBackOrder,TotalTaxAmount,locationCode,BundleProductId,ProductPrice,StockAction,ReturnStatus,TransferStatus";
+                    var ObjOrderLine = model.orderLine.Where((a => a.DerivedStatusCode == "IC" || a.DerivedStatusCode == "ICI")).ToList();
 
-                    var ObjOrderLine = response.data.orderLineId.Find(a => a.derivedStatusCode == "IC" || a.derivedStatusCode == "ICI");
-
-                    if (ObjOrderLine != null)
+                    if (ObjOrderLine != null && ObjOrderLine.Count() > 0)
                     {
                         var OrderObj = _dal.SelectFirstOrDefault<Order>("select * from EC_Order where OrderId='" + response.data.orderId + "'", ref msg);
                         if (OrderObj == null)
@@ -200,31 +198,20 @@ namespace AwsSqsServiceAstha
                             return false;
                         }
 
-                        List<OrderLine> dbOrderLineLst = _dal.Select<OrderLine>("select * from EC_OrderLineCancel where OrderId='" + response.data.orderId + "'", ref msg);
-                        if (dbOrderLineLst != null && dbOrderLineLst.Count > 0)
+                        foreach (var orderLineData in ObjOrderLine)
                         {
-                            foreach (var dbOrderLine in dbOrderLineLst)
-                            {
-                                var data = response.data.orderLineId.Find(a => a.VariantSku == dbOrderLine.VariantSku && a.locationCode == dbOrderLine.locationCode && a.orderId == Convert.ToString(dbOrderLine.OrderId));
+                            OrderLine dbOrderLine = _dal.Select<OrderLine>("select * from EC_OrderLineCancel where OrderId='" + orderLineData.OrderId + "' AND VariantSku = '" + orderLineData.VariantSku + "' AND OrderLineId = '" + orderLineData.OrderLineId + "' ", ref msg).FirstOrDefault();
 
-                                if (data == null)
-                                {
-                                    composite.AddRecordSet<OrderLine>(model.orderLine.FindAll((a => a.DerivedStatusCode == "IC" || a.DerivedStatusCode == "ICI")), OperationMode.InsertOrUpdaet, "", updateCol, "OrderId,VariantSku,locationCode", "EC_OrderLineCancel");
-                                }
-                                else if (Convert.ToString(dbOrderLine.OrderId) == data.orderId && dbOrderLine.VariantSku == data.VariantSku && dbOrderLine.locationCode == data.locationCode)
-                                {
-                                    // skip existing data
-                                }
-                                else
-                                {
-                                    composite.AddRecordSet<OrderLine>(model.orderLine.FindAll((a => (a.DerivedStatusCode == "IC" || a.DerivedStatusCode == "ICI") && a.VariantSku == data.VariantSku && a.locationCode == data.locationCode)), OperationMode.InsertOrUpdaet, "", updateCol, "OrderId,VariantSku,locationCode", "EC_OrderLineCancel");
-                                }
+                            if (dbOrderLine == null)
+                            {
+                                composite.AddRecordSet<OrderLine>(orderLineData, OperationMode.Insert, "", "", "OrderId,VariantSku,OrderLineId", "EC_OrderLineCancel");                                
+                            }
+                            else
+                            {
+                                throw new Exception("Already cancled this order with VariantSku.");
                             }
                         }
-                        else
-                        {
-                            composite.AddRecordSet<OrderLine>(model.orderLine.FindAll((a => a.DerivedStatusCode == "IC" || a.DerivedStatusCode == "ICI")), OperationMode.InsertOrUpdaet, "", updateCol, "OrderId,VariantSku,locationCode", "EC_OrderLineCancel");
-                        }
+
                         var res = _dal.InsertUpdateComposite(composite, ref msg);
                         if (!string.IsNullOrEmpty(msg))
                         {
