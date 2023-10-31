@@ -185,7 +185,8 @@ namespace AwsSqsServiceAstha
                 }
                 catch (Exception ex)
                 {
-                    repo.LogManager(JsonObjectTxtBox.Text, ex.Message + ex.StackTrace, false, "Exception From Manual Product Insert", "JSONForm", StaticDetails.ShipmentOrder);
+                    repo.LogManager(JsonObjectTxtBox.Text, ex.Message , false, "Exception From Manual Product Insert", "JSONForm", StaticDetails.ShipmentOrder);
+                    MessageBox.Show("Error:" + "Exception From Manual Product Insert " + ex.Message);
                 }
             }
 

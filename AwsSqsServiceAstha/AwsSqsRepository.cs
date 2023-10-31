@@ -113,6 +113,16 @@ namespace AwsSqsServiceAstha
                     }
 
                 }
+                //change TransferStatus ="N"
+                List<string> sqlList = new List<string>();
+                sqlList.Add("UPDATE EC_Order set TransferStatus='N' where OrderId='" + Convert.ToInt64(response.data.orderId) + "' ");
+                var r = _dal.ExecuteQuery(sqlList, ref msg);
+                if (!string.IsNullOrEmpty(msg))
+                {
+                    errMsg = msg;
+                    throw new Exception(msg);
+                }
+
                 var lineResponse = _dal.InsertUpdateComposite(composite, ref msg);
                 if (!string.IsNullOrEmpty(msg))
                 {

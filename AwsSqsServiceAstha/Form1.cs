@@ -58,90 +58,99 @@ namespace AwsSqsServiceAstha
                     {
                         foreach (var message in receiveMessageResponse.Messages)
                         {
-                            var item = JsonConvert.DeserializeObject<AwsSqsMessage>(message.Body);
-                            //ProductManagement
-                            if (item.eventType.ToLower() == "updateproduct")
+                            try
                             {
-                                try
+                                var item = JsonConvert.DeserializeObject<AwsSqsMessage>(message.Body);
+                                //ProductManagement
+                                if (item.eventType.ToLower() == "updateproduct")
                                 {
-                                    // Serialize our concrete class into a JSON String
-                                    var jsonString = item.data.ToString();
-                                    var json = JsonConvert.DeserializeObject<ProductResponse>(jsonString);
-                                    var response = repo.ProductManager(json, out string errMsg);
-                                    string variantSkuAll = string.Join(",", json.products.Select(x => string.IsNullOrEmpty(x.VariantSku) ? x.Sku : x.VariantSku));
-                                    repo.LogManager(jsonString, errMsg, response, message.MessageId, variantSkuAll, StaticDetails.VariantSku);
-                                    await DeleteMessage(sqsClient, message, queueUrl);
-                                }
-                                catch (Exception ex)
-                                {
-                                    var jsonString = JsonConvert.SerializeObject(item.data);
-                                    repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Product", "Receive", StaticDetails.VariantSku);
-                                    await DeleteMessage(sqsClient, message, queueUrl);
-                                }
-                            }
-                            //OrderManagement
-                            else if (item.eventType.ToLower() == "allocateorder")
-                            {
-                                try
-                                {
-                                    // Serialize our concrete class into a JSON String
-                                    var jsonString = item.data.ToString();
-                                    var json = JsonConvert.DeserializeObject<OrderResponse>(jsonString);
-                                    var response = repo.OrderManager(json, out string errMsg);
-                                    repo.LogManager(jsonString, errMsg, response, message.MessageId, json.data.orderId, StaticDetails.Order);
-                                    await DeleteMessage(sqsClient, message, queueUrl);
-                                }
-                                catch (Exception ex)
-                                {
-                                    var jsonString = JsonConvert.SerializeObject(item.data);
-                                    repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Order", "AllocateOrder", StaticDetails.Order);
-                                    await DeleteMessage(sqsClient, message, queueUrl);
-                                }
-                            }
-                            //ReturnManagement
-                            else if (item.eventType.ToLower() == "returnorder")
-                            {
-                                try
-                                {
-                                    // Serialize our concrete class into a JSON String
-                                    var jsonString = item.data.ToString();
-                                    var json = JsonConvert.DeserializeObject<ReturnResponse>(jsonString);
-                                    var response = repo.ReturnManager(json, out string errMsg);
-                                    repo.LogManager(jsonString, errMsg, response, message.MessageId, json.returnRequestDetails.FirstOrDefault().OrderID, StaticDetails.ReturnOrder);
-                                    await DeleteMessage(sqsClient, message, queueUrl);
-                                }
-                                catch (Exception ex)
-                                {
-                                    var jsonString = JsonConvert.SerializeObject(item.data);
-                                    repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Return", "Return Order", StaticDetails.ReturnOrder);
-                                    await DeleteMessage(sqsClient, message, queueUrl);
-                                }
-                            }
-                            //ShipmentManagement
-                            else if (item.eventType.ToLower() == "shipmentorder")
-                            {
-                                try
-                                {
-                                    // Serialize our concrete class into a JSON String   
-                                    var jsonString = item.data.ToString();
-                                    var json = JsonConvert.DeserializeObject<ShipmentResponse>(jsonString);
-                                    if (json.ShipmentItems != null && json.ShipmentItems.Count > 0)
+                                    try
                                     {
-                                        var response = repo.ShipmentManager(json, out string errMsg);
-                                        repo.LogManager(jsonString, errMsg, response, message.MessageId, json.ShipmentItems.FirstOrDefault().OrderID, StaticDetails.ShipmentOrder);
+                                        // Serialize our concrete class into a JSON String
+                                        var jsonString = item.data.ToString();
+                                        var json = JsonConvert.DeserializeObject<ProductResponse>(jsonString);
+                                        var response = repo.ProductManager(json, out string errMsg);
+                                        string variantSkuAll = string.Join(",", json.products.Select(x => string.IsNullOrEmpty(x.VariantSku) ? x.Sku : x.VariantSku));
+                                        repo.LogManager(jsonString, errMsg, response, message.MessageId, variantSkuAll, StaticDetails.VariantSku);
+                                        await DeleteMessage(sqsClient, message, queueUrl);
                                     }
-                                    else if (!string.IsNullOrEmpty(jsonString))
+                                    catch (Exception ex)
                                     {
-                                        repo.LogManager(jsonString, "json format not match", false, message.MessageId, "Shipment Order", StaticDetails.ShipmentOrder);
+                                        var jsonString = JsonConvert.SerializeObject(item.data);
+                                        repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Product", "Receive", StaticDetails.VariantSku);
+                                        await DeleteMessage(sqsClient, message, queueUrl);
                                     }
-                                    await DeleteMessage(sqsClient, message, queueUrl);
                                 }
-                                catch (Exception ex)
+                                //OrderManagement
+                                else if (item.eventType.ToLower() == "allocateorder")
                                 {
-                                    var jsonString = JsonConvert.SerializeObject(item.data);
-                                    repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Return", "Shipment Order", StaticDetails.ShipmentOrder);
-                                    await DeleteMessage(sqsClient, message, queueUrl);
+                                    try
+                                    {
+                                        // Serialize our concrete class into a JSON String
+                                        var jsonString = item.data.ToString();
+                                        var json = JsonConvert.DeserializeObject<OrderResponse>(jsonString);
+                                        var response = repo.OrderManager(json, out string errMsg);
+                                        repo.LogManager(jsonString, errMsg, response, message.MessageId, json.data.orderId, StaticDetails.Order);
+                                        await DeleteMessage(sqsClient, message, queueUrl);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        var jsonString = JsonConvert.SerializeObject(item.data);
+                                        repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Order", "AllocateOrder", StaticDetails.Order);
+                                        await DeleteMessage(sqsClient, message, queueUrl);
+                                    }
                                 }
+                                //ReturnManagement
+                                else if (item.eventType.ToLower() == "returnorder")
+                                {
+                                    try
+                                    {
+                                        // Serialize our concrete class into a JSON String
+                                        var jsonString = item.data.ToString();
+                                        var json = JsonConvert.DeserializeObject<ReturnResponse>(jsonString);
+                                        var response = repo.ReturnManager(json, out string errMsg);
+                                        repo.LogManager(jsonString, errMsg, response, message.MessageId, json.returnRequestDetails.FirstOrDefault().OrderID, StaticDetails.ReturnOrder);
+                                        await DeleteMessage(sqsClient, message, queueUrl);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        var jsonString = JsonConvert.SerializeObject(item.data);
+                                        repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Return", "Return Order", StaticDetails.ReturnOrder);
+                                        await DeleteMessage(sqsClient, message, queueUrl);
+                                    }
+                                }
+                                //ShipmentManagement
+                                else if (item.eventType.ToLower() == "shipmentorder")
+                                {
+                                    try
+                                    {
+                                        // Serialize our concrete class into a JSON String   
+                                        var jsonString = item.data.ToString();
+                                        var json = JsonConvert.DeserializeObject<ShipmentResponse>(jsonString);
+                                        if (json.ShipmentItems != null && json.ShipmentItems.Count > 0)
+                                        {
+                                            var response = repo.ShipmentManager(json, out string errMsg);
+                                            repo.LogManager(jsonString, errMsg, response, message.MessageId, json.ShipmentItems.FirstOrDefault().OrderID, StaticDetails.ShipmentOrder);
+                                        }
+                                        else if (!string.IsNullOrEmpty(jsonString))
+                                        {
+                                            repo.LogManager(jsonString, "json format not match", false, message.MessageId, "Shipment Order", StaticDetails.ShipmentOrder);
+                                        }
+                                        await DeleteMessage(sqsClient, message, queueUrl);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        var jsonString = JsonConvert.SerializeObject(item.data);
+                                        repo.LogManager(jsonString, ex.Message + ex.StackTrace, false, "Exception from Return", "Shipment Order", StaticDetails.ShipmentOrder);
+                                        await DeleteMessage(sqsClient, message, queueUrl);
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                var jsonString = message.Body.ToString();
+                                repo.LogManager(jsonString, ex.Message, false, "Exception From ReceivedataFromAwsSqs Method", "Invalid Json", "Exception");
+                                await DeleteMessage(sqsClient, message, queueUrl);
                             }
                         }
                     }
@@ -151,22 +160,13 @@ namespace AwsSqsServiceAstha
             {
                 try
                 {
-                    repo.LogManager("ReceivedataFromAwsSqs Method working failed", ex.Message + ex.StackTrace, false, "Exception From ReceivedataFromAwsSqs Method", "JSONForm", "Exception");
-
-                    if (repo.ConnCheck())
-                    {
-                        ReceivedataFromAwsSqs();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Database Connection Error");
-                        lblDb.Text = "Database Connection Error";
-                    }
+                    repo.LogManager("ReceivedataFromAwsSqs Method working failed", ex.Message, false, "Exception From ReceivedataFromAwsSqs Method", "Invalid Json", "Exception");
+                    startRunning();
                 }
                 catch (Exception ex2)
                 {
-                    MessageBox.Show(ex2.Message);
-                    lblDb.Text = ex2.Message;
+                    lblDb.Text = "Database Connection Error " + ex.Message + " " + ex2.Message;
+                    startRunning();
                 }
             }
         }
@@ -194,27 +194,30 @@ namespace AwsSqsServiceAstha
         }
 
         #endregion       
-
-        private void Form1_Load(object sender, EventArgs e)
+        private void startRunning()
         {
             try
             {
                 if (repo.ConnCheck())
                 {
-                    //_ = Task.Run(() => ReceivedataFromAwsSqs());
                     ReceivedataFromAwsSqs();
                 }
                 else
                 {
-                    MessageBox.Show("Database Connection Error");
                     lblDb.Text = "Database Connection Error";
+                    startRunning();
                 }
             }
             catch (Exception ex2)
             {
-                MessageBox.Show(ex2.Message);
-                lblDb.Text = ex2.Message;
+                lblDb.Text = "Database Connection Error " + ex2.Message;
+                startRunning();
             }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            startRunning();
         }
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
