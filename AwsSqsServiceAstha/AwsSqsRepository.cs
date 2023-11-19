@@ -214,7 +214,7 @@ namespace AwsSqsServiceAstha
 
                             if (dbOrderLine == null)
                             {
-                                composite.AddRecordSet<OrderLine>(orderLineData, OperationMode.Insert, "", "", "OrderId,VariantSku,OrderLineId", "EC_OrderLineCancel");                                
+                                composite.AddRecordSet<OrderLine>(orderLineData, OperationMode.Insert, "", "", "OrderId,VariantSku,OrderLineId", "EC_OrderLineCancel");
                             }
                             else
                             {
@@ -349,7 +349,14 @@ namespace AwsSqsServiceAstha
                 }
                 else
                 {
-                    model.PaymentDetailsId = Convert.ToInt64(item.paymentDetailsId);
+                    if (long.TryParse(item.paymentDetailsId, out long result))
+                    {
+                        model.PaymentDetailsId = result;
+                    }
+                    else
+                    {
+                        throw new Exception("paymentDetailsId: " + item.paymentDetailsId + " must be numeric!!!");
+                    }
                 }
                 model.PaymentOption = item.paymentOption;
                 model.PaymentStatus = item.paymentStatus;
